@@ -19,8 +19,8 @@ public class TestingSharedCode extends OpMode {
     @Override
     public void init() {
         DriverStation.getInstance();
-//        m_mecanumDrive = new Mecanum2024(hardwareMap, new MecanumConfigs(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
-        m_driver = new CommandGamepad(gamepad1,0.5, 0.5, DriverStation.getInstance().getElapsedTimer());
+        m_mecanumDrive = new Mecanum2024(hardwareMap, new MecanumConfigs(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
+        m_driver = new CommandGamepad(gamepad1,0.5, 0.5);
 
         // Driver controls
         m_driver.setDefaultCommand(new DriverRelativeDrive(m_mecanumDrive, m_driver));
