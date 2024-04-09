@@ -17,4 +17,7 @@ public class Intake extends SubsystemBase {
     public void setVelocity(double velocity) {
         m_spinner.set(velocity);
     }
+    public double getVelocity() {
+        return m_spinner.getVelocity();
+    }
 }
