@@ -3,35 +3,28 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commands.DriverRelativeDrive;
 import org.firstinspires.ftc.teamcode.commands.IntakePixel;
 import org.firstinspires.ftc.teamcode.gamepad.CommandGamepad;
-import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.subsytems.Intake;
-import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
 import org.firstinspires.ftc.teamcode.util.DriverStation;
 
-@TeleOp(name="TestingSharedCode")
-public class TestingSharedCode extends OpMode {
-    private Mecanum2024 m_mecanumDrive;
-    private Intake m_intake;
-    private CommandGamepad m_driver;
-
+@TeleOp(name="IntakeTest")
+public class IntakeTest extends OpMode {
+    private Intake m_Intake;
+    private CommandGamepad m_operator;
     @Override
     public void init() {
         DriverStation.getInstance().setTelemetry(new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry()));
-
-        m_mecanumDrive = new Mecanum2024(hardwareMap, new MecanumConfigs(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
-        m_driver = new CommandGamepad(gamepad1,0.5, 0.5);
+        m_operator = new CommandGamepad(gamepad2, 0, 0);
+        m_Intake = new Intake("intake", hardwareMap);
+        m_Intake.setDefaultCommand(new IntakePixel(m_Intake, m_operator));
     }
+
     @Override
     public void loop() {
         CommandScheduler.getInstance().run();
-        DriverStation.getInstance().getTelemetry().update();
     }
 }
