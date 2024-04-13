@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
@@ -19,14 +21,17 @@ public class TestingSharedCode extends OpMode {
     private Mecanum2024 m_mecanumDrive;
     private Intake m_intake;
     private CommandGamepad m_driver;
+
     @Override
     public void init() {
-        DriverStation.getInstance();
+        DriverStation.getInstance().setTelemetry(new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry()));
+
         m_mecanumDrive = new Mecanum2024(hardwareMap, new MecanumConfigs(), new Pose2d(0, 0, Rotation2d.fromDegrees(0)));
         m_driver = new CommandGamepad(gamepad1,0.5, 0.5);
     }
     @Override
     public void loop() {
-
+        CommandScheduler.getInstance().run();
+        DriverStation.getInstance().getTelemetry().update();
     }
 }
