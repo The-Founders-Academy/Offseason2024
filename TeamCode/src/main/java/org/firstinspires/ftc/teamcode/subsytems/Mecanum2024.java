@@ -15,10 +15,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.mecanum.BaseMecanumDrive;
 import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
+import org.firstinspires.ftc.teamcode.util.DriverStation;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 public class Mecanum2024 extends BaseMecanumDrive {
-    private Telemetry m_telemetry = FtcDashboard.getInstance().getTelemetry();
     IMU m_gyro;
     public Mecanum2024(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         super(hardwareMap, mecanumConfigs, initialPose);
@@ -32,7 +32,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
         myIMUparameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
                 )
         );
         m_gyro.initialize(myIMUparameters);

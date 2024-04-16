@@ -19,12 +19,6 @@ public class DriverRelativeDrive extends CommandBase {
 
     @Override
     public void execute() {
-        FtcDashboard.getInstance().getTelemetry().addData("xLeftNotSlewed", m_driver.getLeftX());
-        FtcDashboard.getInstance().getTelemetry().addData("xLeftSlewed", m_driver.getLeftSlewedX());
-        FtcDashboard.getInstance().getTelemetry().addData("yLeftSlewed", m_driver.getLeftSlewedY());
-        FtcDashboard.getInstance().getTelemetry().addData("xRightSlewed", m_driver.getRightSlewedX());
-
-        FtcDashboard.getInstance().getTelemetry().update();
         m_mecanum.moveFieldRelative(m_driver.getLeftSlewedY(), -m_driver.getLeftSlewedX(), -m_driver.getRightSlewedX());
     }
 }
