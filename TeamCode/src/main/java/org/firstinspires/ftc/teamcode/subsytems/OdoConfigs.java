@@ -4,40 +4,41 @@ import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 
 public class OdoConfigs {
-    private double m_leftPositionMeters = 0;
-    private double m_rightPositionMeters = 0;
-    private double m_perpPositionMeters = 0;
-    private double m_deadWheelRadiusMeters = 0;
-    private double m_encoderMetersPerTick = 0;
+    private double m_leftPositionCentimeters = 0;
+    private double m_rightPositionCentimeters = 0;
+    private double m_perpPositionCentimeters = 0;
+    private double m_deadWheelRadiusCentimeters = 0;
+    private double m_encoderCentimetersPerTick = 0;
     private double m_ticksPerRevolution = 0;
+    private double m_trackWidthCentimeters = 0;
     private Pose2d m_initialPose = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
 
     public OdoConfigs() {
 
     }
 
-    public OdoConfigs leftPositionMeters(double pos) {
-        m_leftPositionMeters = pos;
+    public OdoConfigs leftPositionCentimeters(double pos) {
+        m_leftPositionCentimeters = pos;
         return this;
     }
 
-    public OdoConfigs rightPositionMeters(double pos) {
-        m_rightPositionMeters = pos;
+    public OdoConfigs rightPositionCentimeters(double pos) {
+        m_rightPositionCentimeters = pos;
         return this;
     }
 
-    public OdoConfigs perpPositionMeters(double pos) {
-        m_perpPositionMeters = pos;
+    public OdoConfigs perpPositionCentimeters(double pos) {
+        m_perpPositionCentimeters = pos;
         return this;
     }
 
-    public OdoConfigs deadWheelRadiusMeters(double radius) {
-        m_deadWheelRadiusMeters = radius;
+    public OdoConfigs deadWheelRadiusCentimeters(double radius) {
+        m_deadWheelRadiusCentimeters = radius;
         return this;
     }
 
-    public OdoConfigs encoderMetersPerTick(double mpt) {
-        m_encoderMetersPerTick = mpt;
+    public OdoConfigs encoderCentimetersPerTick(double mpt) {
+        m_encoderCentimetersPerTick = mpt;
         return this;
     }
 
@@ -51,24 +52,29 @@ public class OdoConfigs {
         return this;
     }
 
-    public double getLeftPositionMeters() {
-        return m_leftPositionMeters;
+    public OdoConfigs trackWidthCentimeters(double width) {
+        m_trackWidthCentimeters = width;
+        return this;
     }
 
-    public double getRightPositionMeters() {
-        return m_rightPositionMeters;
+    public double getLeftPositionCentimeters() {
+        return m_leftPositionCentimeters;
     }
 
-    public double getPerpPositionMeters() {
-        return m_perpPositionMeters;
+    public double getRightPositionCentimeters() {
+        return m_rightPositionCentimeters;
     }
 
-    public double getDeadWheelRadiusMeters() {
-        return m_deadWheelRadiusMeters;
+    public double getPerpPositionCentimeters() {
+        return m_perpPositionCentimeters;
     }
 
-    public double getEncoderMetersPerTick() {
-        return m_encoderMetersPerTick;
+    public double getDeadWheelRadiusCentimeters() {
+        return m_deadWheelRadiusCentimeters;
+    }
+
+    public double getEncoderCentimetersPerTick() {
+        return m_encoderCentimetersPerTick;
     }
 
     public double getTicksPerRevolution() {
@@ -77,5 +83,9 @@ public class OdoConfigs {
 
     public Pose2d getInitialPose() {
         return m_initialPose;
+    }
+
+    public double getTrackWidthCentimeters() {
+        return m_trackWidthCentimeters;
     }
 }

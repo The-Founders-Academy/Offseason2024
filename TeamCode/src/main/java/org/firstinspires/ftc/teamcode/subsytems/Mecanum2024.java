@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsytems;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
+import com.arcrobotics.ftclib.kinematics.HolonomicOdometry;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveWheelSpeeds;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -18,8 +19,13 @@ import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.util.DriverStation;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
+import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
+
 public class Mecanum2024 extends BaseMecanumDrive {
     private ThreeDeadWheelOdometry m_todometry;
+    private HolonomicOdometry m_odo;
+
     private Pose2d m_robotPose;
 
     public Mecanum2024(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
@@ -30,13 +36,36 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_backLeft.setInverted(true);
 
         OdoConfigs odoConfigs = new OdoConfigs()
-                .deadWheelRadiusMeters(0.024)
-                .ticksPerRevolution(2000)
-                .leftPositionMeters(0.082272755)
-                .rightPositionMeters(-0.075064079)
-                .perpPositionMeters(-0.16206058);
+                .deadWheelRadiusCentimeters(2.4)
+                .ticksPerRevolution(2000.0)
+                .trackWidthCentimeters(16.0)
+                .perpPositionCentimeters(5.3);
 
-        m_todometry = new ThreeDeadWheelOdometry(m_backRight, m_frontRight, m_backLeft, odoConfigs);
+        m_todometry = new ThreeDeadWheelOdometry(m_frontRight, m_backRight, m_backLeft, odoConfigs);
+
+        DoubleSupplier rightSup = new DoubleSupplier() {
+            @Override
+            public double getAsDouble() {
+                return ((double) m_backRight.encoder.getPosition()) * (m_todometry.cm_per_tick / 100);
+            }
+        };
+
+        DoubleSupplier leftSup = new DoubleSupplier() {
+            @Override
+            public double getAsDouble() {
+                return ((double) m_frontLeft.encoder.getPosition()) * (m_todometry.cm_per_tick / 100);
+            }
+        };
+
+        DoubleSupplier perpSup = new DoubleSupplier() {
+            @Override
+            public double getAsDouble() {
+                return ((double) m_backLeft.encoder.getPosition()) * (m_todometry.cm_per_tick / 100);
+
+            }
+        };
+
+        m_odo = new HolonomicOdometry(leftSup, rightSup, perpSup, 0.16, 0.0028);
     }
 
     @Override
@@ -46,7 +75,8 @@ public class Mecanum2024 extends BaseMecanumDrive {
 
     @Override
     public void periodic() {
-        m_robotPose = m_todometry.update(m_robotPose);
+        m_odo.updatePose();
+        m_robotPose = m_odo.getPose();
         DriverStation.getInstance().getTelemetry().clearAll();
         DriverStation.getInstance().getTelemetry().addData("Deadwheel heading", Math.toDegrees(m_robotPose.getHeading()));
         DriverStation.getInstance().getTelemetry().addData("Deadwheel X", m_robotPose.getX());
