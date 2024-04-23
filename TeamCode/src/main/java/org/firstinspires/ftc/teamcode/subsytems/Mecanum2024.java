@@ -19,31 +19,38 @@ import org.firstinspires.ftc.teamcode.util.DriverStation;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 public class Mecanum2024 extends BaseMecanumDrive {
-    IMU m_gyro;
+    private ThreeDeadWheelOdometry m_todometry;
+    private Pose2d m_robotPose;
+
     public Mecanum2024(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         super(hardwareMap, mecanumConfigs, initialPose);
+        m_robotPose = initialPose;
 
         m_frontLeft.setInverted(true);
         m_backLeft.setInverted(true);
 
-        m_gyro = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters myIMUparameters;
+        OdoConfigs odoConfigs = new OdoConfigs()
+                .deadWheelRadiusMeters(0.024)
+                .ticksPerRevolution(2000)
+                .leftPositionMeters(0.082272755)
+                .rightPositionMeters(-0.075064079)
+                .perpPositionMeters(-0.16206058);
 
-        myIMUparameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot(
-                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                        RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
-                )
-        );
-        m_gyro.initialize(myIMUparameters);
+        m_todometry = new ThreeDeadWheelOdometry(m_backRight, m_frontRight, m_backLeft, odoConfigs);
     }
 
     @Override
     public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(m_gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        return Rotation2d.fromDegrees(Math.toDegrees(m_robotPose.getHeading()));
     }
 
     @Override
     public void periodic() {
+        m_robotPose = m_todometry.update(m_robotPose);
+        DriverStation.getInstance().getTelemetry().clearAll();
+        DriverStation.getInstance().getTelemetry().addData("Deadwheel heading", Math.toDegrees(m_robotPose.getHeading()));
+        DriverStation.getInstance().getTelemetry().addData("Deadwheel X", m_robotPose.getX());
+        DriverStation.getInstance().getTelemetry().addData("Deadwheel Y", m_robotPose.getY());
+        DriverStation.getInstance().getTelemetry().update();
     }
 }
