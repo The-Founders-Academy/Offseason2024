@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.util.DriverStation;
 public class DefaultVisionCommand extends CommandBase {
     private Vision m_vision;
 
+
     public DefaultVisionCommand(Vision vision) {
         m_vision = vision;
         addRequirements(m_vision);

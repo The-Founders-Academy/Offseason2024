@@ -23,7 +23,6 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 public class Mecanum2024 extends BaseMecanumDrive {
-    private ThreeDeadWheelOdometry m_todometry;
     private HolonomicOdometry m_odo;
 
     private Pose2d m_robotPose;
@@ -40,32 +39,6 @@ public class Mecanum2024 extends BaseMecanumDrive {
                 .ticksPerRevolution(2000.0)
                 .trackWidthCentimeters(16.0)
                 .perpPositionCentimeters(5.3);
-
-        m_todometry = new ThreeDeadWheelOdometry(m_frontRight, m_backRight, m_backLeft, odoConfigs);
-
-        DoubleSupplier rightSup = new DoubleSupplier() {
-            @Override
-            public double getAsDouble() {
-                return ((double) m_backRight.encoder.getPosition()) * (m_todometry.cm_per_tick / 100);
-            }
-        };
-
-        DoubleSupplier leftSup = new DoubleSupplier() {
-            @Override
-            public double getAsDouble() {
-                return ((double) m_frontLeft.encoder.getPosition()) * (m_todometry.cm_per_tick / 100);
-            }
-        };
-
-        DoubleSupplier perpSup = new DoubleSupplier() {
-            @Override
-            public double getAsDouble() {
-                return ((double) m_backLeft.encoder.getPosition()) * (m_todometry.cm_per_tick / 100);
-
-            }
-        };
-
-        m_odo = new HolonomicOdometry(leftSup, rightSup, perpSup, 0.16, 0.0028);
     }
 
     @Override
