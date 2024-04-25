@@ -67,7 +67,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
 
     @Override
     public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(m_gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        return m_robotPose.getRotation();
     }
 
     @Override
