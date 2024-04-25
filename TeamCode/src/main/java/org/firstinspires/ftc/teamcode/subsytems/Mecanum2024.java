@@ -46,4 +46,11 @@ public class Mecanum2024 extends BaseMecanumDrive {
     @Override
     public void periodic() {
     }
+
+    public void setWheelSpeeds(MecanumDriveWheelSpeeds speeds) {
+        m_frontLeft.setVelocity(speeds.frontLeftMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
+        m_frontRight.setVelocity(speeds.frontRightMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
+        m_backLeft.setVelocity(speeds.rearLeftMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
+        m_backRight.setVelocity(speeds.rearRightMetersPerSecond / m_mecanumConfigs.getMetersPerTick());
+    }
 }
