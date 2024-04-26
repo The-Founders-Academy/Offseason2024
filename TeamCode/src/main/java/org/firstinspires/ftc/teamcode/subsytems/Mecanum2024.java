@@ -137,8 +137,8 @@ public class Mecanum2024 extends BaseMecanumDrive {
 
         double mag = Math.sqrt(Math.pow(vX, 2) + Math.pow(vY, 2));
 
-        double normX = vX / mag;
-        double normY = vY / mag;
+        double normX = (vX / mag) * m_mecanumConfigs.getMaxRobotSpeedMps();
+        double normY = (vY / mag) * m_mecanumConfigs.getMaxRobotSpeedMps();
         double normOmega = MathUtil.clamp(vOmega, -m_mecanumConfigs.getMaxRobotRotationRps(), m_mecanumConfigs.getMaxRobotRotationRps());
 
         ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(normX, normY, normOmega, getHeading());
