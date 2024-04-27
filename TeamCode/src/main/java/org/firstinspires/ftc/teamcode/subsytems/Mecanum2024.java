@@ -27,10 +27,15 @@ public class Mecanum2024 extends BaseMecanumDrive {
 
     @Config
     public static class Mecanum2024Params {
-        public static PIDCoefficients m_translationCoefficients = new PIDCoefficients(0.1, 0, 0);
-        public static PIDCoefficients m_rotationCoefficients = new PIDCoefficients(0.1, 0, 0);
-        public static double m_translationToleranceCentimeters = 10.0;
-        public static double m_rotationToleranceRad = 0.0175; // 3 deg
+        public static double TranslationP = 0.03;
+        public static double TranslationI = 0;
+        public static double TranslationD = 0;
+        public static double RotationP = 0;
+        public static double RotationI = 0;
+        public static double RotationD = 0;
+
+        public static double TranslationToleranceCentimeters = 0.5;
+        public static double RotationToleranceRad = Math.toRadians(3); // 3 Deg
     }
 
     private Pose2d m_robotPose;
@@ -82,14 +87,15 @@ public class Mecanum2024 extends BaseMecanumDrive {
                 )
         );
         m_gyro.initialize(myIMUparameters);
-        Mecanum2024Params.m_translationCoefficients = m_mecanumConfigs.getTranslationPIDValues();
-        Mecanum2024Params.m_rotationCoefficients = m_mecanumConfigs.getRotationPIDValues();
+        Mecanum2024Params.TranslationP = m_mecanumConfigs.getTranslationPIDValues().p;
+        Mecanum2024Params.RotationP = m_mecanumConfigs.getRotationPIDValues().p;
+        Mecanum2024Params.RotationI = m_mecanumConfigs.getRotationPIDValues().i;
+        Mecanum2024Params.RotationD = m_mecanumConfigs.getRotationPIDValues().d;
 
         // These zeroes are replaced with real values as soon as tunePIDs() gets called
         m_translationXController = new PIDController(0, 0, 0);
         m_translationYController = new PIDController(0, 0, 0);
         m_rotationController = new PIDController(0, 0, 0);
-
     }
 
     @Override
@@ -115,33 +121,27 @@ public class Mecanum2024 extends BaseMecanumDrive {
     }
 
     public void tunePIDs() {
-        m_translationXController.setPID(Mecanum2024Params.m_translationCoefficients.p,
-                Mecanum2024Params.m_translationCoefficients.i,
-                Mecanum2024Params.m_translationCoefficients.d);
-        m_translationYController.setPID(Mecanum2024Params.m_translationCoefficients.p,
-                Mecanum2024Params.m_translationCoefficients.i,
-                Mecanum2024Params.m_translationCoefficients.d);
-        m_rotationController.setPID(Mecanum2024Params.m_rotationCoefficients.p,
-                Mecanum2024Params.m_rotationCoefficients.i,
-                Mecanum2024Params.m_rotationCoefficients.d);
+        m_translationXController.setPID(Mecanum2024Params.TranslationP, Mecanum2024Params.TranslationI, Mecanum2024Params.TranslationD);
+        m_translationYController.setPID(Mecanum2024Params.TranslationP, Mecanum2024Params.TranslationI, Mecanum2024Params.TranslationD);
+        m_rotationController.setPID(Mecanum2024Params.RotationP, Mecanum2024Params.RotationI, Mecanum2024Params.RotationD);
 
-        m_translationXController.setTolerance(Mecanum2024Params.m_translationToleranceCentimeters);
-        m_translationYController.setTolerance(Mecanum2024Params.m_translationToleranceCentimeters);
-        m_rotationController.setTolerance(Mecanum2024Params.m_rotationToleranceRad);
+        m_translationXController.setTolerance(Mecanum2024Params.TranslationToleranceCentimeters);
+        m_translationYController.setTolerance(Mecanum2024Params.TranslationToleranceCentimeters);
+        m_rotationController.setTolerance(Mecanum2024Params.RotationToleranceRad);
     }
 
     public void moveFieldRelativeForPID() {
-        double vX = m_translationXController.calculate(m_robotPose.getX());
-        double vY = m_translationYController.calculate(m_robotPose.getY());
-        double vOmega = m_rotationController.calculate(m_robotPose.getHeading());
+        double vX = MathUtil.clamp(m_translationXController.calculate(m_robotPose.getX()),
+                -m_mecanumConfigs.getMaxRobotSpeedMps(),
+                m_mecanumConfigs.getMaxRobotSpeedMps());
+        double vY = MathUtil.clamp(m_translationYController.calculate(m_robotPose.getY()),
+                -m_mecanumConfigs.getMaxRobotSpeedMps(),
+                m_mecanumConfigs.getMaxRobotSpeedMps());
+        double vOmega = -MathUtil.clamp(m_rotationController.calculate(m_robotPose.getHeading()),
+                -m_mecanumConfigs.getMaxRobotRotationRps(),
+                m_mecanumConfigs.getMaxRobotRotationRps());
 
-        double mag = Math.sqrt(Math.pow(vX, 2) + Math.pow(vY, 2));
-
-        double normX = (vX / mag) * m_mecanumConfigs.getMaxRobotSpeedMps();
-        double normY = (vY / mag) * m_mecanumConfigs.getMaxRobotSpeedMps();
-        double normOmega = MathUtil.clamp(vOmega, -m_mecanumConfigs.getMaxRobotRotationRps(), m_mecanumConfigs.getMaxRobotRotationRps());
-
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(normX, normY, normOmega, getHeading());
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, vOmega, getHeading());
         move(speeds);
     }
 
