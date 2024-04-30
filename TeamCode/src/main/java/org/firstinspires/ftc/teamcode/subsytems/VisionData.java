@@ -27,7 +27,7 @@ public class VisionData {
         this.y = y;
     }
 
-    public int getId() {
+    public int getID() {
         return id;
     }
 
