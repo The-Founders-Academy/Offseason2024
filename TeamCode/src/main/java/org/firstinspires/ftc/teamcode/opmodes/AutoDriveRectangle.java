@@ -18,7 +18,7 @@ public class AutoDriveRectangle extends CommandOpMode {
     private Mecanum2024 m_mecanumDrive;
     Pose2d m_start = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
 
-    Pose2d m_topLeftCorner = new Pose2d(15, 0, Rotation2d.fromDegrees(0));
+    Pose2d m_topLeftCorner = new Pose2d(45, 0, Rotation2d.fromDegrees(0));
     Pose2d m_topRightCorner = new Pose2d(45, 45, Rotation2d.fromDegrees(0));
     Pose2d m_bottomRightCorner = new Pose2d(0, 45, Rotation2d.fromDegrees(0));
     @Override
