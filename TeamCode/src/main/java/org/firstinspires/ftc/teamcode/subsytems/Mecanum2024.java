@@ -87,10 +87,6 @@ public class Mecanum2024 extends BaseMecanumDrive {
                 )
         );
         m_gyro.initialize(myIMUparameters);
-        Mecanum2024Params.TranslationP = m_mecanumConfigs.getTranslationPIDValues().p;
-        Mecanum2024Params.RotationP = m_mecanumConfigs.getRotationPIDValues().p;
-        Mecanum2024Params.RotationI = m_mecanumConfigs.getRotationPIDValues().i;
-        Mecanum2024Params.RotationD = m_mecanumConfigs.getRotationPIDValues().d;
 
         // These zeroes are replaced with real values as soon as tunePIDs() gets called
         m_translationXController = new PIDController(0, 0, 0);
@@ -100,7 +96,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
 
     @Override
     public Rotation2d getHeading() {
-        return Rotation2d.fromDegrees(m_gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        return m_robotPose.getRotation();
     }
 
     public void setTargetPose(Pose2d targetPose) {
@@ -137,7 +133,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
         double vY = MathUtil.clamp(m_translationYController.calculate(m_robotPose.getY()),
                 -m_mecanumConfigs.getMaxRobotSpeedMps(),
                 m_mecanumConfigs.getMaxRobotSpeedMps());
-        double vOmega = -MathUtil.clamp(m_rotationController.calculate(m_robotPose.getHeading()),
+        double vOmega = MathUtil.clamp(m_rotationController.calculate(m_robotPose.getHeading()),
                 -m_mecanumConfigs.getMaxRobotRotationRps(),
                 m_mecanumConfigs.getMaxRobotRotationRps());
 
@@ -172,11 +168,13 @@ public class Mecanum2024 extends BaseMecanumDrive {
         tunePIDs();
         m_odo.updatePose();
         m_robotPose = m_odo.getPose();
+        m_robotPose.getRotation().times(-1); // Hold the door
         TelemetryPacket p = new TelemetryPacket();
         displayPositionOnField(p);
         p.put("Current X", m_robotPose.getX());
         p.put("Current Y", m_robotPose.getY());
         p.put("Current heading", m_robotPose.getHeading());
+        p.put("IMU Heading", m_gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
         p.put("Target X", m_targetPose.getX());
         p.put("Target Y", m_targetPose.getY());
         p.put("Target heading", m_targetPose.getHeading());
