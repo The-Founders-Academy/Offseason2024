@@ -88,6 +88,9 @@ public class Mecanum2024 extends BaseMecanumDrive {
         );
         m_gyro.initialize(myIMUparameters);
 
+
+        m_odo.updatePose(initialPose);
+
         // These zeroes are replaced with real values as soon as tunePIDs() gets called
         m_translationXController = new PIDController(0, 0, 0);
         m_translationYController = new PIDController(0, 0, 0);
