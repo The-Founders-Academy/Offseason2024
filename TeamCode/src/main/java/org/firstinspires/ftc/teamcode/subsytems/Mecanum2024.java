@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mecanum.BaseMecanumDrive;
 import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.util.DriverStation;
+import org.firstinspires.ftc.teamcode.util.DriverStation.Alliance;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 
@@ -48,6 +49,23 @@ public class Mecanum2024 extends BaseMecanumDrive {
     private PIDController m_translationXController;
     private PIDController m_translationYController;
     private PIDController m_rotationController;
+
+    /**
+     * Rotates field coordinates 90 degrees counterclockwise to account for the different
+     * coordinate systems of field relative and driver relative. Also rotates them 180
+     * degrees if the alliance is set to blue.
+     * @param fieldPose
+     * @return
+     */
+    public static Pose2d FieldPoseToDriverPose(Pose2d fieldPose) {
+        Pose2d adjustedPose = fieldPose.rotate(Math.PI / 2); // 90 degrees cc
+
+        if(DriverStation.getInstance().getAlliance() == Alliance.BLUE) {
+            return adjustedPose.rotate(Math.PI);
+        } else {
+            return adjustedPose;
+        }
+    }
 
     public Mecanum2024(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         super(hardwareMap, mecanumConfigs, initialPose);
@@ -140,19 +158,15 @@ public class Mecanum2024 extends BaseMecanumDrive {
                 -m_mecanumConfigs.getMaxRobotRotationRps(),
                 m_mecanumConfigs.getMaxRobotRotationRps());
 
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, vOmega, getHeading());
+        // The above values are in field coordinates. Now convert them to driver coordinates
+        Pose2d velocityPose = new Pose2d(vX, vY, new Rotation2d(vOmega));
+        Pose2d aVelocity = FieldPoseToDriverPose(velocityPose);
+
+        // Even though the function is called fromFieldRelativeSpeeds, these speeds are
+        // actually driver relative
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(aVelocity.getX(),
+                aVelocity.getY(), aVelocity.getHeading(), getHeading());
         move(speeds);
-    }
-
-    public void displayPositionOnField(TelemetryPacket p) {
-        p.fieldOverlay()
-                .setFill("blue")
-                .fillRect(centimetersToInches(-m_robotPose.getY()), centimetersToInches(m_robotPose.getX()), 40, 40);
-    }
-
-    // Dirty yankees
-    private double centimetersToInches(double centimeters) {
-        return centimeters * 2.54;
     }
 
     public void stop() {
@@ -172,15 +186,5 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_odo.updatePose();
         m_robotPose = m_odo.getPose();
         m_robotPose.getRotation().times(-1); // Hold the door
-        TelemetryPacket p = new TelemetryPacket();
-        displayPositionOnField(p);
-        p.put("Current X", m_robotPose.getX());
-        p.put("Current Y", m_robotPose.getY());
-        p.put("Current heading", m_robotPose.getHeading());
-        p.put("IMU Heading", m_gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        p.put("Target X", m_targetPose.getX());
-        p.put("Target Y", m_targetPose.getY());
-        p.put("Target heading", m_targetPose.getHeading());
-        FtcDashboard.getInstance().sendTelemetryPacket(p);
     }
 }

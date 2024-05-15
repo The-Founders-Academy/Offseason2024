@@ -16,11 +16,11 @@ import org.firstinspires.ftc.teamcode.util.DriverStation;
 @Autonomous(name="Simple rectangle PID")
 public class AutoDriveRectangle extends CommandOpMode {
     private Mecanum2024 m_mecanumDrive;
-    Pose2d m_start = new Pose2d(0, 0, Rotation2d.fromDegrees(0));
+    Pose2d m_start = new Pose2d(0, 0, Rotation2d.fromDegrees(90));
 
-    Pose2d m_topLeftCorner = new Pose2d(45, 0, Rotation2d.fromDegrees(0));
-    Pose2d m_topRightCorner = new Pose2d(45, 45, Rotation2d.fromDegrees(0));
-    Pose2d m_bottomRightCorner = new Pose2d(0, 45, Rotation2d.fromDegrees(0));
+    Pose2d m_topLeftCorner = new Pose2d(0, 15, Rotation2d.fromDegrees(90));
+    Pose2d m_topRightCorner = new Pose2d(15, 15, Rotation2d.fromDegrees(90));
+    Pose2d m_bottomRightCorner = new Pose2d(15, 0, Rotation2d.fromDegrees(90));
     @Override
     public void initialize() {
         DriverStation.getInstance().setTelemetry(telemetry);
