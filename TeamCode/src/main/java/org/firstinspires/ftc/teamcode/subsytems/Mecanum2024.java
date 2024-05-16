@@ -49,6 +49,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
     private PIDController m_translationXController;
     private PIDController m_translationYController;
     private PIDController m_rotationController;
+    private double m_initialAngleRad;
 
     /**
      * Rotates field coordinates 90 degrees counterclockwise to account for the different
@@ -85,7 +86,6 @@ public class Mecanum2024 extends BaseMecanumDrive {
         left.setDirection(Motor.Direction.REVERSE);
         right = m_frontRight.encoder.setDistancePerPulse(cm_per_tick);
         horizontal = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
-        horizontal.setDirection(Motor.Direction.REVERSE);
 
         m_odo = new HolonomicOdometry(
                 left::getDistance,
@@ -106,8 +106,11 @@ public class Mecanum2024 extends BaseMecanumDrive {
         );
         m_gyro.initialize(myIMUparameters);
 
+        // m_odo is tracking heading / angle offset, so set its initial rotation to 0
+        m_odo.updatePose(new Pose2d(initialPose.getX(), initialPose.getY(), Rotation2d.fromDegrees(0)));
 
-        m_odo.updatePose(initialPose);
+        m_robotPose = initialPose;
+        m_initialAngleRad = initialPose.getHeading();
 
         // These zeroes are replaced with real values as soon as tunePIDs() gets called
         m_translationXController = new PIDController(0, 0, 0);
@@ -184,7 +187,13 @@ public class Mecanum2024 extends BaseMecanumDrive {
     public void periodic() {
         tunePIDs();
         m_odo.updatePose();
-        m_robotPose = m_odo.getPose();
-        m_robotPose.getRotation().times(-1); // Hold the door
+
+        m_robotPose = new Pose2d(m_odo.getPose().getY(), m_odo.getPose().getX(), new Rotation2d(m_initialAngleRad - m_odo.getPose().getHeading()));
+
+        TelemetryPacket p = new TelemetryPacket();
+        p.put("odo X", m_robotPose.getX());
+        p.put("odo Y", m_robotPose.getY());
+        p.put("odo Heading", Math.toDegrees(m_robotPose.getHeading()));
+        FtcDashboard.getInstance().sendTelemetryPacket(p);
     }
 }
