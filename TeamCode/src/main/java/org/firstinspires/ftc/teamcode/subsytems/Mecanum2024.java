@@ -51,23 +51,6 @@ public class Mecanum2024 extends BaseMecanumDrive {
     private PIDController m_rotationController;
     private double m_initialAngleRad;
 
-    /**
-     * Rotates field coordinates 90 degrees counterclockwise to account for the different
-     * coordinate systems of field relative and driver relative. Also rotates them 180
-     * degrees if the alliance is set to blue.
-     * @param fieldPose
-     * @return
-     */
-    public static Pose2d FieldPoseToDriverPose(Pose2d fieldPose) {
-        Pose2d adjustedPose = fieldPose.rotate(Math.PI / 2); // 90 degrees cc
-
-        if(DriverStation.getInstance().getAlliance() == Alliance.BLUE) {
-            return adjustedPose.rotate(Math.PI);
-        } else {
-            return adjustedPose;
-        }
-    }
-
     public Mecanum2024(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         super(hardwareMap, mecanumConfigs, initialPose);
         m_robotPose = initialPose;
@@ -120,7 +103,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
 
     @Override
     public Rotation2d getHeading() {
-        return m_robotPose.getRotation();
+        return m_odo.getPose().getRotation();
     }
 
     public void setTargetPose(Pose2d targetPose) {
@@ -157,18 +140,18 @@ public class Mecanum2024 extends BaseMecanumDrive {
         double vY = MathUtil.clamp(m_translationYController.calculate(m_robotPose.getY()),
                 -m_mecanumConfigs.getMaxRobotSpeedMps(),
                 m_mecanumConfigs.getMaxRobotSpeedMps());
-        double vOmega = MathUtil.clamp(m_rotationController.calculate(m_robotPose.getHeading()),
+
+        // Do some angle wrapping to ensure the shortest path is taken to get to the rotation target
+        double normalizedRotationRad = m_robotPose.getHeading();
+        if(normalizedRotationRad < 0) {
+            normalizedRotationRad = m_robotPose.getHeading() + 2 * Math.PI; // Normalize to [0, 2PI]
+        }
+
+        double vOmega = MathUtil.clamp(m_rotationController.calculate(normalizedRotationRad),
                 -m_mecanumConfigs.getMaxRobotRotationRps(),
                 m_mecanumConfigs.getMaxRobotRotationRps());
 
-        // The above values are in field coordinates. Now convert them to driver coordinates
-        Pose2d velocityPose = new Pose2d(vX, vY, new Rotation2d(vOmega));
-        Pose2d aVelocity = FieldPoseToDriverPose(velocityPose);
-
-        // Even though the function is called fromFieldRelativeSpeeds, these speeds are
-        // actually driver relative
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(aVelocity.getX(),
-                aVelocity.getY(), aVelocity.getHeading(), getHeading());
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading()); // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
         move(speeds);
     }
 
@@ -179,16 +162,15 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_backRight.stopMotor();
     }
 
-    public void resetPose2024(Pose2d pose) {
-        m_robotPose = pose;
-    }
 
     @Override
     public void periodic() {
         tunePIDs();
         m_odo.updatePose();
+        m_odo.getPose().getRotation().times(-1); // Odometry heading is measured clockwise while we use counterclockwise rotations everywhere else, so we have to invert it here
 
-        m_robotPose = new Pose2d(m_odo.getPose().getY(), m_odo.getPose().getX(), new Rotation2d(m_initialAngleRad - m_odo.getPose().getHeading()));
+        double currentAngleRad = m_initialAngleRad + m_odo.getPose().getHeading(); // Initial + Heading
+        m_robotPose = new Pose2d(m_odo.getPose().getY(), m_odo.getPose().getX(), new Rotation2d(currentAngleRad));
 
         TelemetryPacket p = new TelemetryPacket();
         p.put("odo X", m_robotPose.getX());
