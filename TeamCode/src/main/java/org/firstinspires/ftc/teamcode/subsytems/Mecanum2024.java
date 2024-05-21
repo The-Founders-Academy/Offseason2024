@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mecanum.BaseMecanumDrive;
 import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.util.DriverStation;
+import org.firstinspires.ftc.teamcode.util.DriverStation.Alliance;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 
@@ -48,6 +49,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
     private PIDController m_translationXController;
     private PIDController m_translationYController;
     private PIDController m_rotationController;
+    private double m_initialAngleRad;
 
     public Mecanum2024(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         super(hardwareMap, mecanumConfigs, initialPose);
@@ -67,7 +69,6 @@ public class Mecanum2024 extends BaseMecanumDrive {
         left.setDirection(Motor.Direction.REVERSE);
         right = m_frontRight.encoder.setDistancePerPulse(cm_per_tick);
         horizontal = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
-        horizontal.setDirection(Motor.Direction.REVERSE);
 
         m_odo = new HolonomicOdometry(
                 left::getDistance,
@@ -88,6 +89,12 @@ public class Mecanum2024 extends BaseMecanumDrive {
         );
         m_gyro.initialize(myIMUparameters);
 
+        // m_odo is tracking heading / angle offset, so set its initial rotation to 0
+        m_odo.updatePose(new Pose2d(initialPose.getX(), initialPose.getY(), Rotation2d.fromDegrees(0)));
+
+        m_robotPose = initialPose;
+        m_initialAngleRad = initialPose.getHeading();
+
         // These zeroes are replaced with real values as soon as tunePIDs() gets called
         m_translationXController = new PIDController(0, 0, 0);
         m_translationYController = new PIDController(0, 0, 0);
@@ -96,7 +103,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
 
     @Override
     public Rotation2d getHeading() {
-        return m_robotPose.getRotation();
+        return m_odo.getPose().getRotation();
     }
 
     public void setTargetPose(Pose2d targetPose) {
@@ -133,23 +140,19 @@ public class Mecanum2024 extends BaseMecanumDrive {
         double vY = MathUtil.clamp(m_translationYController.calculate(m_robotPose.getY()),
                 -m_mecanumConfigs.getMaxRobotSpeedMps(),
                 m_mecanumConfigs.getMaxRobotSpeedMps());
-        double vOmega = MathUtil.clamp(m_rotationController.calculate(m_robotPose.getHeading()),
+
+        // Do some angle wrapping to ensure the shortest path is taken to get to the rotation target
+        double normalizedRotationRad = m_robotPose.getHeading();
+        if(normalizedRotationRad < 0) {
+            normalizedRotationRad = m_robotPose.getHeading() + 2 * Math.PI; // Normalize to [0, 2PI]
+        }
+
+        double vOmega = MathUtil.clamp(m_rotationController.calculate(normalizedRotationRad),
                 -m_mecanumConfigs.getMaxRobotRotationRps(),
                 m_mecanumConfigs.getMaxRobotRotationRps());
 
-        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vX, vY, vOmega, getHeading());
+        ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds(vY, -vX, vOmega, getHeading()); // Transform the x and y coordinates to account for differences between global field coordinates and driver field coordinates
         move(speeds);
-    }
-
-    public void displayPositionOnField(TelemetryPacket p) {
-        p.fieldOverlay()
-                .setFill("blue")
-                .fillRect(centimetersToInches(-m_robotPose.getY()), centimetersToInches(m_robotPose.getX()), 40, 40);
-    }
-
-    // Dirty yankees
-    private double centimetersToInches(double centimeters) {
-        return centimeters * 2.54;
     }
 
     public void stop() {
@@ -159,25 +162,20 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_backRight.stopMotor();
     }
 
-    public void resetPose2024(Pose2d pose) {
-        m_robotPose = pose;
-    }
 
     @Override
     public void periodic() {
         tunePIDs();
         m_odo.updatePose();
-        m_robotPose = m_odo.getPose();
-        m_robotPose.getRotation().times(-1); // Hold the door
+        m_odo.getPose().getRotation().times(-1); // Odometry heading is measured clockwise while we use counterclockwise rotations everywhere else, so we have to invert it here
+
+        double currentAngleRad = m_initialAngleRad + m_odo.getPose().getHeading(); // Initial + Heading
+        m_robotPose = new Pose2d(m_odo.getPose().getY(), m_odo.getPose().getX(), new Rotation2d(currentAngleRad));
+
         TelemetryPacket p = new TelemetryPacket();
-        displayPositionOnField(p);
-        p.put("Current X", m_robotPose.getX());
-        p.put("Current Y", m_robotPose.getY());
-        p.put("Current heading", m_robotPose.getHeading());
-        p.put("IMU Heading", m_gyro.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        p.put("Target X", m_targetPose.getX());
-        p.put("Target Y", m_targetPose.getY());
-        p.put("Target heading", m_targetPose.getHeading());
+        p.put("odo X", m_robotPose.getX());
+        p.put("odo Y", m_robotPose.getY());
+        p.put("odo Heading", Math.toDegrees(m_robotPose.getHeading()));
         FtcDashboard.getInstance().sendTelemetryPacket(p);
     }
 }

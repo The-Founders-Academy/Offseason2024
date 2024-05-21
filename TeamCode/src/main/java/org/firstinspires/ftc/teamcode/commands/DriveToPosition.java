@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandBase;
+import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.geometry.Pose2d;
+import com.arcrobotics.ftclib.geometry.Rotation2d;
 
 import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
 
@@ -12,6 +15,7 @@ public class DriveToPosition extends CommandBase {
     public DriveToPosition(Mecanum2024 mecanumDrive, Pose2d targetPose) {
         m_mecanumDrive = mecanumDrive;
         m_targetPose = targetPose;
+
         addRequirements(m_mecanumDrive);
     }
 
@@ -32,5 +36,13 @@ public class DriveToPosition extends CommandBase {
     public void end(boolean interrupted) {
         m_mecanumDrive.resetPIDs();
         m_mecanumDrive.stop();
+    }
+
+    public static Command constructCommand(Mecanum2024 mecanumDrive, double x, double y, double rad, long timeoutMillis) {
+        return new DriveToPosition(mecanumDrive, new Pose2d(x, y, new Rotation2d(rad))).withTimeout(timeoutMillis);
+    }
+
+    public static Command constructCommand(Mecanum2024 mecanumDrive, double x, double y, long timeoutMillis) {
+        return new DriveToPosition(mecanumDrive, new Pose2d(x, y, mecanumDrive.getHeading())).withTimeout(timeoutMillis);
     }
 }
