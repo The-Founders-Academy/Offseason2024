@@ -22,7 +22,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
     IMU m_gyro;
     public Mecanum2024(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         super(hardwareMap, mecanumConfigs, initialPose);
-
+        // m_mecanumConfigs = MecanumConfigs;   TODO find reason why AutoDriveRectangle isn't working, potential fix?
         m_frontLeft.setInverted(true);
         m_backLeft.setInverted(true);
 
