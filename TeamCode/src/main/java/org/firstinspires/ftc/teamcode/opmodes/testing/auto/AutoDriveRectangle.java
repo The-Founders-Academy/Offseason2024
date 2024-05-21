@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.DriverStation;
 @Autonomous(name="Simple rectangle PID")
 public class AutoDriveRectangle extends CommandOpMode {
     private Mecanum2024 m_mecanumDrive;
-    Pose2d m_start = new Pose2d(0, 0, Rotation2d.fromDegrees(90));
+    Pose2d m_bottomLeftCorner = new Pose2d(0, 0, Rotation2d.fromDegrees(90));
 
     Pose2d m_topLeftCorner = new Pose2d(0, 15, Rotation2d.fromDegrees(90));
     Pose2d m_topRightCorner = new Pose2d(15, 15, Rotation2d.fromDegrees(90));
@@ -26,14 +26,14 @@ public class AutoDriveRectangle extends CommandOpMode {
         DriverStation.getInstance().setTelemetry(telemetry);
 
         MecanumConfigs configs = new MecanumConfigs().runMode(Motor.RunMode.RawPower);
-        m_mecanumDrive = new Mecanum2024(hardwareMap, configs, m_start);
+        m_mecanumDrive = new Mecanum2024(hardwareMap, configs, m_bottomLeftCorner);
 
         SequentialCommandGroup path = new SequentialCommandGroup();
         path.addCommands(
                 new DriveToPosition(m_mecanumDrive, m_topLeftCorner).withTimeout(2000),
                 new DriveToPosition(m_mecanumDrive, m_topRightCorner).withTimeout(2000),
                 new DriveToPosition(m_mecanumDrive, m_bottomRightCorner).withTimeout(2000),
-                new DriveToPosition(m_mecanumDrive, m_start).withTimeout(2000)
+                new DriveToPosition(m_mecanumDrive, m_bottomLeftCorner).withTimeout(2000)
         );
 
         CommandScheduler.getInstance().schedule(path);

@@ -37,12 +37,4 @@ public class DriveToPosition extends CommandBase {
         m_mecanumDrive.resetPIDs();
         m_mecanumDrive.stop();
     }
-
-    public static Command constructCommand(Mecanum2024 mecanumDrive, double x, double y, double rad, long timeoutMillis) {
-        return new DriveToPosition(mecanumDrive, new Pose2d(x, y, new Rotation2d(rad))).withTimeout(timeoutMillis);
-    }
-
-    public static Command constructCommand(Mecanum2024 mecanumDrive, double x, double y, long timeoutMillis) {
-        return new DriveToPosition(mecanumDrive, new Pose2d(x, y, mecanumDrive.getHeading())).withTimeout(timeoutMillis);
-    }
 }
