@@ -3,23 +3,18 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
-
-import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource;
-import org.openftc.easyopencv.OpenCvCamera;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class opencv extends LinearOpMode {
+public class FindRedProp extends LinearOpMode {
     // X and Y coordinates of Camera || TODO Replace with actual values
     double cX = 0;
     double cY = 0;
