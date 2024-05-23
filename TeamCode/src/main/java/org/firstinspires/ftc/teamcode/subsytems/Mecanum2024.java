@@ -162,6 +162,10 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_backRight.stopMotor();
     }
 
+    @Override
+    public void resetPose(Pose2d pose) {
+        m_robotPose = pose;
+    }
 
     @Override
     public void periodic() {
