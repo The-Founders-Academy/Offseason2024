@@ -55,8 +55,6 @@ public class Mecanum2024 extends BaseMecanumDrive {
         super(hardwareMap, mecanumConfigs, initialPose);
         m_robotPose = initialPose;
 
-        m_frontLeft.setInverted(true);
-        m_backLeft.setInverted(true);
 
         OdoConfigs odoConfigs = new OdoConfigs()
                 .deadWheelRadiusCentimeters(2.4)
@@ -162,6 +160,15 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_backRight.stopMotor();
     }
 
+    @Override
+    public void resetPose(Pose2d pose) {
+        m_robotPose = pose;
+    }
+
+    @Override
+    public Pose2d getPose() {
+        return m_robotPose;
+    }
 
     @Override
     public void periodic() {
