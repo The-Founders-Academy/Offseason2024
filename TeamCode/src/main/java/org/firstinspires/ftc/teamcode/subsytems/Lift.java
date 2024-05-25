@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsytems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
@@ -12,7 +14,7 @@ public class Lift extends SubsystemBase {
     public static class LiftParams2024 {
         public static double PositionCoefficient = 0;
         public static int PositionTolerance = 25;
-        public static int StowedTicks = 10; // The lowest position should be greater than 0 to avoid the robot hitting itself
+        public static int StowedTicks = 150; // The lowest position should be greater than 0 to avoid the robot hitting itself
         public static int LowScoreTicks = 5000;
         public static int MidScoreTicks = 10000;
         public static int HighScoreTicks = 12000;
@@ -24,18 +26,23 @@ public class Lift extends SubsystemBase {
     public Lift(HardwareMap hardwareMap, String leftName, String rightName) {
         m_left = new MotorEx(hardwareMap, leftName);
         m_right = new MotorEx(hardwareMap, rightName);
+        m_right.setInverted(true);
 
-        // TODO: One of these motors needs to be reversed
         m_left.setRunMode(Motor.RunMode.PositionControl);
         m_right.setRunMode(Motor.RunMode.PositionControl);
 
-        m_left.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        m_right.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        m_left.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        m_right.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
     }
 
-    public void setExtension(int ticks) {
-        m_left.set(ticks);
-        m_right.set(ticks);
+    public void setTargetExtension(int ticks) {
+        m_left.setTargetPosition(ticks);
+        m_right.setTargetPosition(ticks);
+    }
+
+    public void set(double value) {
+        m_left.set(value);
+        m_right.set(value);
     }
 
     public void tunePIDs() {
@@ -45,9 +52,17 @@ public class Lift extends SubsystemBase {
         m_right.setPositionTolerance(LiftParams2024.PositionTolerance);
     }
 
+    public boolean atSetPoint() {
+        return m_left.atTargetPosition() && m_right.atTargetPosition();
+    }
+
     @Override
     public void periodic() {
         tunePIDs();
+        TelemetryPacket p = new TelemetryPacket();
+        p.put("left position", m_left.encoder.getPosition());
+        p.put("right position", m_right.encoder.getPosition());
+        p.put("at target", m_left.atTargetPosition());
+        FtcDashboard.getInstance().sendTelemetryPacket(p);
     }
-
 }

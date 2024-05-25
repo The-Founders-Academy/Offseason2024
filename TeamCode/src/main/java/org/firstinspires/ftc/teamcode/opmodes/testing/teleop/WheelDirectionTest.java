@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="WheelDirectionTest")
+@TeleOp(name="WheelDirectionTest", group="test")
 public class WheelDirectionTest extends OpMode {
     MotorEx fL;
     MotorEx fR;

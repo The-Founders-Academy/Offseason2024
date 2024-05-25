@@ -7,13 +7,16 @@ import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
+import org.firstinspires.ftc.teamcode.subsytems.Lift;
 import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
 
 @TeleOp(name="IdleTest")
 public class IdleTest extends CommandOpMode {
-    private Mecanum2024 m_mecanumDrive;
+//    private Mecanum2024 m_mecanumDrive;
+    private Lift m_lift;
     @Override
     public void initialize() {
-        m_mecanumDrive = new Mecanum2024(hardwareMap, new MecanumConfigs(), new Pose2d(0 ,0, Rotation2d.fromDegrees(0)));
+//        m_mecanumDrive = new Mecanum2024(hardwareMap, new MecanumConfigs(), new Pose2d(0 ,0, Rotation2d.fromDegrees(0)));
+        m_lift = new Lift(hardwareMap, "leftLift", "rightLift");
     }
 }
