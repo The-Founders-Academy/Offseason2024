@@ -31,7 +31,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
         public static double TranslationP = 0.03;
         public static double TranslationI = 0;
         public static double TranslationD = 0;
-        public static double RotationP = 0;
+        public static double RotationP = 4;
         public static double RotationI = 0;
         public static double RotationD = 0;
 
@@ -55,18 +55,21 @@ public class Mecanum2024 extends BaseMecanumDrive {
         super(hardwareMap, mecanumConfigs, initialPose);
         m_robotPose = initialPose;
 
+        m_frontLeft.setInverted(true);
+        m_backLeft.setInverted(true);
 
         OdoConfigs odoConfigs = new OdoConfigs()
                 .deadWheelRadiusCentimeters(2.4)
                 .ticksPerRevolution(2000.0)
-                .trackWidthCentimeters(36.83)
+                .trackWidthCentimeters(36)
                 .perpOffset(-20.32);
 
         double cm_per_tick = 2 * Math.PI * odoConfigs.getDeadWheelRadiusCentimeters() / odoConfigs.getTicksPerRevolution();
-        left = m_backRight.encoder.setDistancePerPulse(cm_per_tick);
+        left = m_frontRight.encoder.setDistancePerPulse(cm_per_tick);
         left.setDirection(Motor.Direction.REVERSE);
-        right = m_frontRight.encoder.setDistancePerPulse(cm_per_tick);
-        horizontal = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
+        right = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
+        right.setDirection(Motor.Direction.REVERSE);
+        horizontal = m_backLeft.encoder.setDistancePerPulse(cm_per_tick);
 
         m_odo = new HolonomicOdometry(
                 left::getDistance,
@@ -101,14 +104,23 @@ public class Mecanum2024 extends BaseMecanumDrive {
 
     @Override
     public Rotation2d getHeading() {
-        return m_odo.getPose().getRotation();
+        return m_robotPose.getRotation().minus(new Rotation2d(Math.PI / 2));
     }
 
     public void setTargetPose(Pose2d targetPose) {
         m_targetPose = targetPose;
         m_translationXController.setSetPoint(m_targetPose.getX());
         m_translationYController.setSetPoint(m_targetPose.getY());
-        m_rotationController.setSetPoint(m_targetPose.getHeading());
+
+        double targetRotation = 0;
+        if(m_targetPose.getHeading() < 0) {
+            targetRotation = m_targetPose.getHeading() + 2 * Math.PI;
+        } else {
+            targetRotation = m_targetPose.getHeading();
+        }
+
+
+        m_rotationController.setSetPoint(targetRotation);
     }
 
     public boolean atTargetPose() {
@@ -174,15 +186,18 @@ public class Mecanum2024 extends BaseMecanumDrive {
     public void periodic() {
         tunePIDs();
         m_odo.updatePose();
-        m_odo.getPose().getRotation().times(-1); // Odometry heading is measured clockwise while we use counterclockwise rotations everywhere else, so we have to invert it here
 
-        double currentAngleRad = m_initialAngleRad + m_odo.getPose().getHeading(); // Initial + Heading
-        m_robotPose = new Pose2d(m_odo.getPose().getY(), m_odo.getPose().getX(), new Rotation2d(currentAngleRad));
+        double currentAngleRad = m_initialAngleRad - m_odo.getPose().getHeading(); // Initial + Heading
+        m_robotPose = new Pose2d(m_odo.getPose().getX(), -m_odo.getPose().getY(), new Rotation2d(currentAngleRad));
 
         TelemetryPacket p = new TelemetryPacket();
         p.put("odo X", m_robotPose.getX());
         p.put("odo Y", m_robotPose.getY());
         p.put("odo Heading", Math.toDegrees(m_robotPose.getHeading()));
+        p.put("left encoder", left.getPosition());
+        p.put("right encoder", right.getPosition());
+        p.put("horizontal", horizontal.getPosition());
+
         FtcDashboard.getInstance().sendTelemetryPacket(p);
     }
 }
