@@ -50,8 +50,8 @@ public class DetectTeamProp extends OpenCvPipeline {
         Mat extractedRight = rightMat.clone();
 
         Core.extractChannel(leftMat, extractedLeft, m_channel);
-        Core.extractChannel(leftMat, extractedCenter, m_channel);
-        Core.extractChannel(leftMat, extractedRight, m_channel);
+        Core.extractChannel(centerMat, extractedCenter, m_channel);
+        Core.extractChannel(rightMat, extractedRight, m_channel);
 
         Scalar meanLeft = Core.mean(extractedLeft);
         Scalar meanCenter = Core.mean(extractedCenter);
@@ -68,7 +68,7 @@ public class DetectTeamProp extends OpenCvPipeline {
         PropZone zone = PropZone.LEFT;
 
         if(m_leftMean < m_centerMean) zone = PropZone.CENTER;
-        if(m_centerMean < m_centerMean && m_centerMean < m_rightMean) zone = PropZone.RIGHT;
+        if(m_leftMean < m_centerMean && m_centerMean < m_rightMean) zone = PropZone.RIGHT;
 
         return zone;
     }
