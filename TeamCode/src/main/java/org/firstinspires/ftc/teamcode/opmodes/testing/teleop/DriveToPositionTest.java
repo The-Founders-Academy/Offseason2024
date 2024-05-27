@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.gamepad.CommandGamepad;
 import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
 
-@TeleOp(name="DriveToPositionTest")
+@TeleOp(name="DriveToPositionTest", group="test")
 public class DriveToPositionTest extends CommandOpMode {
     private Mecanum2024 m_mecanumDrive;
     private CommandGamepad m_driver;

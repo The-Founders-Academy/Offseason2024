@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
 import org.firstinspires.ftc.teamcode.util.DriverStation;
 
-@TeleOp(name="DriveTest")
+@TeleOp(name="DriveTest", group="test")
 public class DriveTest extends CommandOpMode {
     private CommandGamepad m_driver;
     private Mecanum2024 m_mecanumDrive;

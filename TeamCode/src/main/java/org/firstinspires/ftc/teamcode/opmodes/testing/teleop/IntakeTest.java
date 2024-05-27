@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.gamepad.CommandGamepad;
 import org.firstinspires.ftc.teamcode.subsytems.Intake;
 import org.firstinspires.ftc.teamcode.util.DriverStation;
 
-@TeleOp(name="IntakeTest")
+@TeleOp(name="IntakeTest", group="test")
 public class IntakeTest extends OpMode {
     private Intake m_Intake;
     private CommandGamepad m_operator;
