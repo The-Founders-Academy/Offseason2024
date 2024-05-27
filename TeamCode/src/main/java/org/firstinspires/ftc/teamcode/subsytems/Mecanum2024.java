@@ -25,7 +25,6 @@ import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 
 public class Mecanum2024 extends BaseMecanumDrive {
-
     @Config
     public static class Mecanum2024Params {
         public static double TranslationP = 0.03;
@@ -100,6 +99,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_translationXController = new PIDController(0, 0, 0);
         m_translationYController = new PIDController(0, 0, 0);
         m_rotationController = new PIDController(0, 0, 0);
+
     }
 
     @Override
