@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.pipelines;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
@@ -18,14 +18,11 @@ public class DetectTeamPropPipeline extends OpenCvPipeline {
     private double m_rightMean = 0;
 
 
-    private Telemetry telemetry;
-
     public enum PropZone  {
         LEFT, CENTER, RIGHT
     }
 
-    public DetectTeamPropPipeline(Telemetry telemetry) {
-        this.telemetry = telemetry;
+    public DetectTeamPropPipeline() {
     }
 
 
@@ -71,10 +68,6 @@ public class DetectTeamPropPipeline extends OpenCvPipeline {
 
         // Call getPropZone() and use its result
         PropZone zone = getPropZone();
-
-        // Display telemetry based on the result
-        telemetry.addData("PropZone", zone);
-        telemetry.update();
 
         return input; // Return the modified input (or null if not modified)
     }
