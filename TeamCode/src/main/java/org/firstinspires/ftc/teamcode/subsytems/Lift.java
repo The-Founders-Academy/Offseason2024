@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Lift extends SubsystemBase {
     @Config
     public static class LiftParams2024 {
-        public static double PositionCoefficient = 0;
+        public static double PositionCoefficient = 0.03;
         public static int PositionTolerance = 25;
         public static int StowedTicks = 150; // The lowest position should be greater than 0 to avoid the robot hitting itself
         public static int LowScoreTicks = 5000;
