@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.subsytems.Lift;
 
 public class MoveLiftToPosition extends CommandBase {
     private Lift m_lift;
+    private Lift.Extension m_extension = null;
     private int m_ticks;
 
     public MoveLiftToPosition(Lift lift, int ticks) {
@@ -14,9 +15,19 @@ public class MoveLiftToPosition extends CommandBase {
         addRequirements(m_lift);
     }
 
+    public MoveLiftToPosition(Lift lift, Lift.Extension extension) {
+        m_lift = lift;
+        m_extension = extension;
+        addRequirements(m_lift);
+    }
+
     @Override
     public void initialize() {
-        m_lift.setTargetExtension(m_ticks);
+        if(m_extension == null) {
+            m_lift.setTargetExtension(m_ticks);
+        } else {
+            m_lift.setTargetExtension(m_extension);
+        }
     }
 
     @Override

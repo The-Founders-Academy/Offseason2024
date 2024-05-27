@@ -20,6 +20,10 @@ public class Lift extends SubsystemBase {
         public static int HighScoreTicks = 12000;
     }
 
+    public enum Extension {
+        STOW, LOW_SCORE, MID_SCORE, HIGH_SCORE
+    }
+
     private MotorEx m_left;
     private MotorEx m_right;
 
@@ -38,6 +42,23 @@ public class Lift extends SubsystemBase {
     public void setTargetExtension(int ticks) {
         m_left.setTargetPosition(ticks);
         m_right.setTargetPosition(ticks);
+    }
+
+    public void setTargetExtension(Extension extension) {
+        switch(extension) {
+            case STOW:
+                setTargetExtension(LiftParams2024.StowedTicks);
+                break;
+            case LOW_SCORE:
+                setTargetExtension(LiftParams2024.LowScoreTicks);
+                break;
+            case MID_SCORE:
+                setTargetExtension(LiftParams2024.MidScoreTicks);
+                break;
+            case HIGH_SCORE:
+                setTargetExtension(LiftParams2024.HighScoreTicks);
+                break;
+        }
     }
 
     public void set(double value) {
