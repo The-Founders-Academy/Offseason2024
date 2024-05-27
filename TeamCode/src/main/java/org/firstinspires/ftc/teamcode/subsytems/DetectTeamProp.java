@@ -1,14 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.util.DriverStation;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-// Add DriverStation import statement back eventually
-public class DetectTeamPropPipeline extends OpenCvPipeline {
+
+public class DetectTeamProp extends OpenCvPipeline {
     public static final double ProportionLeft = 0.33;
     public static final double ProportionCenter = 0.34;
     public static final double ProportionRight = 0.33;
@@ -17,21 +17,13 @@ public class DetectTeamPropPipeline extends OpenCvPipeline {
     private double m_centerMean = 0;
     private double m_rightMean = 0;
 
-
-    private Telemetry telemetry;
-
     public enum PropZone  {
         LEFT, CENTER, RIGHT
     }
 
-    public DetectTeamPropPipeline(Telemetry telemetry) {
-        this.telemetry = telemetry;
-    }
-
-
     @Override
     public void init(Mat mat) {
-        int m_channel = 1; // Replace with actual Team value.
+        m_channel = DriverStation.getInstance().getAlliance() == DriverStation.Alliance.RED ? 1 : 2; // Extract the alliance color
     }
 
     @Override
@@ -69,14 +61,7 @@ public class DetectTeamPropPipeline extends OpenCvPipeline {
         m_centerMean = meanCenter.val[0];
         m_rightMean = meanRight.val[0];
 
-        // Call getPropZone() and use its result
-        PropZone zone = getPropZone();
-
-        // Display telemetry based on the result
-        telemetry.addData("PropZone", zone);
-        telemetry.update();
-
-        return input; // Return the modified input (or null if not modified)
+        return null;
     }
 
     public PropZone getPropZone() {
