@@ -157,6 +157,19 @@ public class Mecanum2024 extends BaseMecanumDrive {
             normalizedRotationRad = m_robotPose.getHeading() + 2 * Math.PI; // Normalize to [0, 2PI]
         }
 
+        double differenceNoAdjust = normalizedRotationRad - m_rotationController.getSetPoint();
+        double differenceAdjust = 0;
+
+        if(differenceNoAdjust > 0) {
+            differenceAdjust = normalizedRotationRad - 2 * Math.PI - m_rotationController.getSetPoint();
+        } else if(differenceNoAdjust < 0) {
+            differenceAdjust = normalizedRotationRad + 2 * Math.PI - m_rotationController.getSetPoint();
+        }
+
+        if(Math.abs(differenceAdjust) < Math.abs(differenceNoAdjust)) {
+            normalizedRotationRad = differenceAdjust + m_rotationController.getSetPoint();
+        }
+
         double vOmega = MathUtil.clamp(m_rotationController.calculate(normalizedRotationRad),
                 -m_mecanumConfigs.getMaxRobotRotationRps(),
                 m_mecanumConfigs.getMaxRobotRotationRps());
