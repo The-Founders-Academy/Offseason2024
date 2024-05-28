@@ -20,8 +20,8 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
     double width = 0;
 
     // These values are for the back camera, if we get a front camera remember to check specific values for that
-    private static final int cameraWidth = 1280;
-    private static final int cameraHeight = 720;
+    private static final int cameraWidth = 1280; // Values for EOCV-Sim, actual value is 1280, EOCV-Sim is 640
+    private static final int cameraHeight = 720; // Values for EOCV-Sim, actual value is 720, EOCV-Sim is 480
 
     // NOT CORRECT NUMBERS
     public static final double realUnitObjectWidth = 3.75; // TODO Replace with correct width of object in real units.
@@ -29,8 +29,18 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
+
+        int top = input.rows() / 2; // Top boundary of the ROI (halfway down the image)
+        int bottom = input.rows();  // Bottom boundary of the ROI (bottom of the image)
+        int left = 0;               // Left boundary of the ROI (left edge of the image)
+        int right = input.cols();   // Right boundary of the ROI (right edge of the image)
+
+        // Only focuses on bottom half of the image
+        Rect roi = new Rect(left, top, right - left, bottom - top);
+        Mat croppedInput = new Mat(input, roi);
+
         // Preprocesses the frame to detect yellow areas
-        Mat yellowMask = preprocessFrame(input);
+        Mat yellowMask = preprocessFrame(croppedInput);
 
         // Finds contours (areas) of the yellow regions it detected
         List<MatOfPoint> contours = new ArrayList<>();
@@ -65,6 +75,9 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
             String label = "(" + (int) cX + ", " + (int) cY + ")";
             Imgproc.putText(input, label, new Point(cX + 10, cY), Imgproc.FONT_HERSHEY_COMPLEX, 0.5, new Scalar(0, 255, 0), 2);
             Imgproc.circle(input, new Point(cX, cY), 5, new Scalar(0, 255, 0), -1);
+
+            // Say what third it's in
+            LCRvalue(cX);
         }
 
         return input;
@@ -112,6 +125,7 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
         return boundingRect.width;
     }
 
+
     // Method to calculate the centroid of a contour
     private Point calculateCentroid(MatOfPoint contour) {
         Point centroid = new Point(0, 0);
@@ -127,6 +141,24 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
         centroid.y /= numPoints;
 
         return centroid;
+    }
+    private String LCRvalue(double cord) {
+        double coordinate = cord;
+        double left_third = cameraWidth * 0.33;
+        double center_third = cameraWidth * 0.66;
+
+
+
+        if (coordinate <= left_third) {
+            return("LEFT");
+        }
+        else if (coordinate > left_third && coordinate <= center_third) {
+            return("CENTER");
+        }
+        else {
+            return("RIGHT");
+
+        }
     }
 
     // Used in the initial RunOpMode command to display live telemetry data, as well as displaying it as a label next to the contour box in the YellowBlobDetectionPipeline function.
