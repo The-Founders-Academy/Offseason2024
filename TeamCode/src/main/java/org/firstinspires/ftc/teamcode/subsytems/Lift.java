@@ -12,12 +12,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Lift extends SubsystemBase {
     @Config
     public static class LiftParams2024 {
-        public static double PositionCoefficient = 0.03;
+        public static double PositionCoefficient = 0.009;
         public static int PositionTolerance = 25;
         public static int StowedTicks = 150; // The lowest position should be greater than 0 to avoid the robot hitting itself
-        public static int LowScoreTicks = 5000;
-        public static int MidScoreTicks = 10000;
-        public static int HighScoreTicks = 12000;
+        public static int LowScoreTicks = 1200;
+        public static int MidScoreTicks = 1900;
+        public static int HighScoreTicks = 2900;
+        public static int MAX = 2999;
     }
 
     public enum Extension {
@@ -40,6 +41,10 @@ public class Lift extends SubsystemBase {
     }
 
     public void setTargetExtension(int ticks) {
+        if(ticks > LiftParams2024.MAX) {
+            m_left.setTargetPosition(LiftParams2024.MAX);
+            m_right.setTargetPosition(LiftParams2024.MAX);
+        }
         m_left.setTargetPosition(ticks);
         m_right.setTargetPosition(ticks);
     }
