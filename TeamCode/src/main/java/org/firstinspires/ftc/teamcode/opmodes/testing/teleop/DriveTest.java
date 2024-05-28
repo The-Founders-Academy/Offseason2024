@@ -21,7 +21,7 @@ public class DriveTest extends CommandOpMode {
         DriverStation.getInstance().setAlliance(DriverStation.Alliance.RED);
         MecanumConfigs configs = new MecanumConfigs().runMode(Motor.RunMode.RawPower);
         m_mecanumDrive = new Mecanum2024(hardwareMap, configs, new Pose2d(0, 0, Rotation2d.fromDegrees(90)));
-        m_driver = new CommandGamepad(gamepad1, 1, 1);
+        m_driver = new CommandGamepad(gamepad1, 0.01, 0.01);
         m_mecanumDrive.setDefaultCommand(new DriverRelativeDrive(m_mecanumDrive, m_driver));
     }
 }

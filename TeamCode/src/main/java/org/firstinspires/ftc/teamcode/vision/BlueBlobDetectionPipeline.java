@@ -8,11 +8,11 @@ import org.opencv.core.Point;
 import org.opencv.core.MatOfPoint;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class RedBlobDetectionPipeline extends OpenCvPipeline {
+public class BlueBlobDetectionPipeline extends OpenCvPipeline {
+
     double cX = 0;
     double cY = 0;
 
@@ -27,9 +27,10 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
     public static final double realUnitObjectWidth = 3.75; // TODO Replace with correct width of object in real units.
     public static final double focalLength = 728; // TODO Replace with correct Focal Length of Camera
 
+
     @Override
     public Mat processFrame(Mat input) {
-
+        int top = input.rows() / 2; // Top boundary of the ROI (halfway down the image)
 
 
         // Preprocesses the frame to detect yellow areas
@@ -82,9 +83,9 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
         Imgproc.cvtColor(frame, hsvFrame, Imgproc.COLOR_BGR2HSV);
 
         // Scalars contain HSV values, values between 100 and 180 contain the values that red is in.
-        // TODO may need to change the values of 100-180 to something else, values copied from tutorial
-        Scalar lowerYellow = new Scalar(100, 100, 100);
-        Scalar upperYellow = new Scalar(180, 255, 255);
+        // TODO may need to change the values to something else
+        Scalar lowerYellow = new Scalar(0, 100, 100);
+        Scalar upperYellow = new Scalar(60, 255, 255);
 
         Mat yellowMask = new Mat();
         Core.inRange(hsvFrame, lowerYellow, upperYellow, yellowMask);
