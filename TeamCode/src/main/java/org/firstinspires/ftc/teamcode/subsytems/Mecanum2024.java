@@ -13,8 +13,7 @@ import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
-
+import org.firstinspires.ftc.teamcode.pipelines.DetectTeamPropPipeline.PropZone;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mecanum.BaseMecanumDrive;
@@ -49,6 +48,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
     private PIDController m_translationYController;
     private PIDController m_rotationController;
     private double m_initialAngleRad;
+    private PropZone m_propZone = PropZone.CENTER;
 
     public Mecanum2024(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
         super(hardwareMap, mecanumConfigs, initialPose);
@@ -119,7 +119,6 @@ public class Mecanum2024 extends BaseMecanumDrive {
             targetRotation = m_targetPose.getHeading();
         }
 
-
         m_rotationController.setSetPoint(targetRotation);
     }
 
@@ -180,6 +179,18 @@ public class Mecanum2024 extends BaseMecanumDrive {
     @Override
     public Pose2d getPose() {
         return m_robotPose;
+    }
+
+    public Pose2d getTargetPose() {
+        return m_targetPose;
+    }
+
+    public void setPropZone(PropZone zone) {
+        m_propZone = zone;
+    }
+
+    public PropZone getPropZone() {
+        return m_propZone;
     }
 
     @Override
