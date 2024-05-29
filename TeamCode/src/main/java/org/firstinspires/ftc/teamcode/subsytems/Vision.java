@@ -4,25 +4,28 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.pipelines.DetectTeamPropPipeline;
-import org.firstinspires.ftc.teamcode.pipelines.DetectTeamPropPipeline.PropZone;
+import org.firstinspires.ftc.teamcode.pipelines.RedBlobDetectionPipeline;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.Optional;
 
 public class Vision extends SubsystemBase {
     private OpenCvCamera m_front;
-    private DetectTeamPropPipeline m_teamPropPipeline;
+    private RedBlobDetectionPipeline m_teamPropPipeline;
     private Mode m_mode = Mode.PROP;
 
     public enum Mode {
         PROP, TAG, STACK
     }
 
+    public enum PropZone {
+        LEFT, CENTER, RIGHT
+    }
+
     public Vision(HardwareMap hardwareMap) {
         m_front = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "frontCamera"));
-        m_teamPropPipeline = new DetectTeamPropPipeline();
 
         m_front.setPipeline(m_teamPropPipeline);
     }

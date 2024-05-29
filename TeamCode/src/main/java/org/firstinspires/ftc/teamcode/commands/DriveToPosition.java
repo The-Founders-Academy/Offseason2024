@@ -7,7 +7,7 @@ import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 
 import org.firstinspires.ftc.teamcode.FieldPose2024;
-import org.firstinspires.ftc.teamcode.pipelines.DetectTeamPropPipeline.PropZone;
+import org.firstinspires.ftc.teamcode.subsytems.Vision.PropZone;
 
 import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
 

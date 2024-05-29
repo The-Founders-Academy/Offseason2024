@@ -13,7 +13,7 @@ import com.arcrobotics.ftclib.kinematics.wpilibkinematics.ChassisSpeeds;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import org.firstinspires.ftc.teamcode.pipelines.DetectTeamPropPipeline.PropZone;
+import org.firstinspires.ftc.teamcode.subsytems.Vision.PropZone;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mecanum.BaseMecanumDrive;
@@ -21,7 +21,6 @@ import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.util.DriverStation;
 import org.firstinspires.ftc.teamcode.util.DriverStation.Alliance;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
-
 
 public class Mecanum2024 extends BaseMecanumDrive {
     @Config
