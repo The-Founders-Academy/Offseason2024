@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Pipelines;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
@@ -36,7 +36,7 @@ public class DetectTeamPropPipeline extends OpenCvPipeline {
 
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, input, Imgproc.COLOR_;RGB2YCrCb) // This may be a problematic call (input to input)
+        Imgproc.cvtColor(input, input, Imgproc.COLOR_RGB2YCrCb); // This may be a problematic call (input to input)
 
         Rect leftRect = new Rect(
                 (int) 0, (int) (input.height() * 0.5),
