@@ -204,9 +204,9 @@ public class Mecanum2024 extends BaseMecanumDrive {
         p.put("odo X", m_robotPose.getX());
         p.put("odo Y", m_robotPose.getY());
         p.put("odo Heading", Math.toDegrees(m_robotPose.getHeading()));
-        p.put("left encoder", left.getPosition());
-        p.put("right encoder", right.getPosition());
-        p.put("horizontal", horizontal.getPosition());
+        p.put("target X", m_translationXController.getSetPoint());
+        p.put("target Y", m_translationYController.getSetPoint());
+        p.put("target Heading", m_rotationController.getSetPoint());
 
         FtcDashboard.getInstance().sendTelemetryPacket(p);
     }
