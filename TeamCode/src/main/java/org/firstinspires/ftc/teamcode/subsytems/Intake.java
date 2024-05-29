@@ -14,9 +14,11 @@ public class Intake extends SubsystemBase {
         m_spinner = new MotorEx(hardwareMap, name);
         m_spinner.setRunMode(Motor.RunMode.RawPower);
     }
+
     public void setVelocity(double velocity) {
         m_spinner.set(velocity);
     }
+
     public double getVelocity() {
         return m_spinner.getVelocity();
     }

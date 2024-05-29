@@ -25,13 +25,13 @@ public class DriveToPositionWithTeamProp extends CommandBase {
         if(m_goToBackdrop == true) {
             switch(m_mecanumDrive.getPropZone()) {
                 case LEFT:
-                    targetPose = DriverStation.getInstance().getAlliance() == DriverStation.Alliance.RED ? FieldPose2024.RedBackdropLeft : FieldPose2024.BlueBackdropLeft;
+                    targetPose = DriverStation.getInstance().getAlliance() == DriverStation.Alliance.RED ? FieldPose2024.RedBackdropInner : FieldPose2024.BlueBackdropOuter;
                     break;
                 case CENTER:
                     targetPose = DriverStation.getInstance().getAlliance() == DriverStation.Alliance.RED ? FieldPose2024.RedBackdropCenter : FieldPose2024.BlueBackdropCenter;
                     break;
                 case RIGHT:
-                    targetPose = DriverStation.getInstance().getAlliance() == DriverStation.Alliance.RED ? FieldPose2024.RedBackdropRight : FieldPose2024.BlueBackdropRight;
+                    targetPose = DriverStation.getInstance().getAlliance() == DriverStation.Alliance.RED ? FieldPose2024.RedBackdropOuter : FieldPose2024.BlueBackdropInner;
                     break;
             }
         } else {
