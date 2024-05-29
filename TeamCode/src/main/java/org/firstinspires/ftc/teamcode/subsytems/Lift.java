@@ -28,9 +28,9 @@ public class Lift extends SubsystemBase {
     private MotorEx m_left;
     private MotorEx m_right;
 
-    public Lift(HardwareMap hardwareMap, String leftName, String rightName) {
-        m_left = new MotorEx(hardwareMap, leftName);
-        m_right = new MotorEx(hardwareMap, rightName);
+    public Lift(HardwareMap hardwareMap) {
+        m_left = new MotorEx(hardwareMap, "leftLift");
+        m_right = new MotorEx(hardwareMap, "rightLift");
         m_right.setInverted(true);
 
         m_left.setRunMode(Motor.RunMode.PositionControl);

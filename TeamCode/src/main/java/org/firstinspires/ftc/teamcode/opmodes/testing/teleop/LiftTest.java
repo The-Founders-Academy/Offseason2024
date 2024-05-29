@@ -15,7 +15,7 @@ public class LiftTest extends CommandOpMode {
 
     @Override
     public void initialize() {
-        m_lift = new Lift(hardwareMap, "leftLift", "rightLift");
+        m_lift = new Lift(hardwareMap);
         m_operator = new CommandGamepad(gamepad2, 1, 1);
 
         m_operator.buttonA().whenPressed(new MoveLiftToPosition(m_lift, Extension.STOW));
