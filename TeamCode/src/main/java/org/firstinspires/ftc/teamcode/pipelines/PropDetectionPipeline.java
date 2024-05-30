@@ -1,29 +1,29 @@
 package org.firstinspires.ftc.teamcode.pipelines;
 
-import org.openftc.easyopencv.OpenCvPipeline;
+import com.acmerobotics.dashboard.FtcDashboard;
 
+import org.firstinspires.ftc.teamcode.subsytems.Vision;
+import org.firstinspires.ftc.teamcode.util.DriverStation;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
-import org.opencv.core.Point;
-import org.opencv.core.MatOfPoint;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
-import org.firstinspires.ftc.teamcode.subsytems.Vision.PropZone;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class RedBlobDetectionPipeline extends OpenCvPipeline {
+public class PropDetectionPipeline extends OpenCvPipeline {
     double cX = 0;
     double cY = 0;
 
     // Width of Camera || TODO Replace with actual value
     double width = 0;
 
-    private PropZone m_propZone = null;
+    private Vision.PropZone m_propZone = null;
     // These values are for the back camera, if we get a front camera remember to check specific values for that
     private static final int cameraWidth = 1280; // Values for EOCV-Sim, actual value is 1280, EOCV-Sim is 640
     private static final int cameraHeight = 720; // Values for EOCV-Sim, actual value is 720, EOCV-Sim is 480
@@ -31,7 +31,14 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
     // NOT CORRECT NUMBERS
     public static final double realUnitObjectWidth = 3.75; // TODO Replace with correct width of object in real units.
     public static final double focalLength = 728; // TODO Replace with correct Focal Length of Camera
+    private double m_lowerHue;
+    private double m_higherHue;
 
+    public PropDetectionPipeline(double lowerHue, double higherHue) {
+        super();
+        m_lowerHue = lowerHue;
+        m_higherHue = higherHue;
+    }
     @Override
     public Mat processFrame(Mat input) {
         // Preprocesses the frame to detect yellow areas
@@ -85,8 +92,8 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
 
         // Scalars contain HSV values, values between 100 and 180 contain the values that red is in.
         // TODO may need to change the values of 100-180 to something else, values copied from tutorial
-        Scalar lowerYellow = new Scalar(100, 100, 100);
-        Scalar upperYellow = new Scalar(180, 255, 255);
+        Scalar lowerYellow = new Scalar(m_lowerHue, 100, 100);
+        Scalar upperYellow = new Scalar(m_higherHue, 255, 255);
 
         Mat yellowMask = new Mat();
         Core.inRange(hsvFrame, lowerYellow, upperYellow, yellowMask);
@@ -142,21 +149,19 @@ public class RedBlobDetectionPipeline extends OpenCvPipeline {
         double left_third = cameraWidth * 0.33;
         double center_third = cameraWidth * 0.66;
 
-
-
         if (coordinate <= left_third) {
-            m_propZone = PropZone.LEFT;
+            m_propZone = Vision.PropZone.LEFT;
         }
         else if (coordinate > left_third && coordinate <= center_third) {
-            m_propZone = PropZone.CENTER;
+            m_propZone = Vision.PropZone.CENTER;
         }
         else {
-            m_propZone = PropZone.RIGHT;
+            m_propZone = Vision.PropZone.RIGHT;
 
         }
     }
 
-    public PropZone getPropZone() {
+    public Vision.PropZone getPropZone() {
         return m_propZone;
     }
 
