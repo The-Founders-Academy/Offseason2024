@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.pipelines;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 
 import org.firstinspires.ftc.teamcode.subsytems.Vision;
 import org.firstinspires.ftc.teamcode.util.DriverStation;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PropDetectionPipeline extends OpenCvPipeline {
-    double cX = 0;
+    public double cX = 0;
     double cY = 0;
 
     // Width of Camera || TODO Replace with actual value
@@ -146,16 +147,18 @@ public class PropDetectionPipeline extends OpenCvPipeline {
     }
     private void LCRvalue(double cord) {
         double coordinate = cord;
-        double left_third = cameraWidth * 0.33;
-        double center_third = cameraWidth * 0.66;
+        double cordProp = coordinate / cameraWidth;
 
-        if (coordinate <= left_third) {
+
+        if (cordProp <= 0.33) {
             m_propZone = Vision.PropZone.LEFT;
         }
-        else if (coordinate > left_third && coordinate <= center_third) {
+        else if (cordProp > 0.33 && cordProp <= 0.5) {
+
             m_propZone = Vision.PropZone.CENTER;
         }
-        else {
+        else if (cordProp > 0.5 && cordProp <= 1){
+
             m_propZone = Vision.PropZone.RIGHT;
 
         }
