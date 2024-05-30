@@ -25,10 +25,10 @@ import org.firstinspires.ftc.teamcode.util.MathUtil;
 public class Mecanum2024 extends BaseMecanumDrive {
     @Config
     public static class Mecanum2024Params {
-        public static double TranslationP = 0.03;
+        public static double TranslationP = 0.1;
         public static double TranslationI = 0;
         public static double TranslationD = 0;
-        public static double RotationP = 4;
+        public static double RotationP = 16;
         public static double RotationI = 0;
         public static double RotationD = 0;
 
@@ -89,7 +89,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_gyro.initialize(myIMUparameters);
 
         // m_odo is tracking heading / angle offset, so set its initial rotation to 0
-        m_odo.updatePose(new Pose2d(initialPose.getX(), initialPose.getY(), Rotation2d.fromDegrees(0)));
+        m_odo.updatePose(new Pose2d(initialPose.getY(), initialPose.getX(), Rotation2d.fromDegrees(0)));
 
         m_robotPose = initialPose;
         m_initialAngleRad = initialPose.getHeading();
@@ -198,7 +198,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_odo.updatePose();
 
         double currentAngleRad = m_initialAngleRad - m_odo.getPose().getHeading(); // Initial + Heading
-        m_robotPose = new Pose2d(m_odo.getPose().getX(), -m_odo.getPose().getY(), new Rotation2d(currentAngleRad));
+        m_robotPose = new Pose2d(m_odo.getPose().getY(), m_odo.getPose().getX(), new Rotation2d(currentAngleRad));
 
         TelemetryPacket p = new TelemetryPacket();
         p.put("odo X", m_robotPose.getX());
