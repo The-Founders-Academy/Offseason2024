@@ -48,7 +48,7 @@ public class Vision extends SubsystemBase {
             @Override
             public void onOpened() {
                 m_front.startStreaming(1280, 720);
-                FtcDashboard.getInstance().startCameraStream(m_front, 30);
+                m_front.setPipeline(m_propDetectionPipeline);
             }
 
             @Override
