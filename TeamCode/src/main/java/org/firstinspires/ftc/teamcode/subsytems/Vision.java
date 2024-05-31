@@ -71,6 +71,8 @@ public class Vision extends SubsystemBase {
     public void periodic() {
         TelemetryPacket p = new TelemetryPacket();
         p.put("Current PropZone", m_propDetectionPipeline.getPropZone());
+        p.put("X Coordinate", m_propDetectionPipeline.getXCoordinate());
+        p.put("Relative X Coordinate", m_propDetectionPipeline.getRelativeX());
         p.put("Pipeline tim MS", m_front.getPipelineTimeMs());
         FtcDashboard.getInstance().sendTelemetryPacket(p);
     }

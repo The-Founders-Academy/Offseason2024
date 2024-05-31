@@ -153,11 +153,11 @@ public class PropDetectionPipeline extends OpenCvPipeline {
         if (cordProp <= 0.33) {
             m_propZone = Vision.PropZone.LEFT;
         }
-        else if (cordProp > 0.33 && cordProp <= 0.5) {
+        else if (cordProp > 0.33 && cordProp <= 0.66) {
 
             m_propZone = Vision.PropZone.CENTER;
         }
-        else if (cordProp > 0.5 && cordProp <= 1){
+        else if (cordProp > 0.66 && cordProp <= 1){
 
             m_propZone = Vision.PropZone.RIGHT;
 
@@ -167,6 +167,8 @@ public class PropDetectionPipeline extends OpenCvPipeline {
     public Vision.PropZone getPropZone() {
         return m_propZone;
     }
+    public double getXCoordinate() {return cX;}
+    public double getRelativeX() { return cX / 1280;}
 
     // Used in the initial RunOpMode command to display live telemetry data, as well as displaying it as a label next to the contour box in the YellowBlobDetectionPipeline function.
     private static double getDistance(double width) {
