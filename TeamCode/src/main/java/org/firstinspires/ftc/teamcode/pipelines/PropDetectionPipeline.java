@@ -80,7 +80,7 @@ public class PropDetectionPipeline extends OpenCvPipeline {
             Imgproc.circle(input, new Point(cX, cY), 5, new Scalar(0, 255, 0), -1);
 
             // Say what third it's in
-            LCRvalue(cX);
+            LCRvalue(cY);
         }
 
         return input;
@@ -150,16 +150,16 @@ public class PropDetectionPipeline extends OpenCvPipeline {
         double cordProp = coordinate / cameraWidth;
 
 
-        if (cordProp <= 0.33) {
-            m_propZone = Vision.PropZone.LEFT;
+        if (cordProp <= 0.42) {
+            m_propZone = Vision.PropZone.RIGHT;  // It's inverted
         }
-        else if (cordProp > 0.33 && cordProp <= 0.66) {
+        else if (cordProp > 0.42 && cordProp <= 0.75) {  // Should be good for center third
 
             m_propZone = Vision.PropZone.CENTER;
         }
-        else if (cordProp > 0.66 && cordProp <= 1){
+        else if (cordProp > 0.75 && cordProp <= 1){
 
-            m_propZone = Vision.PropZone.RIGHT;
+            m_propZone = Vision.PropZone.LEFT; // It's inverted, idk why
 
         }
     }
@@ -167,8 +167,8 @@ public class PropDetectionPipeline extends OpenCvPipeline {
     public Vision.PropZone getPropZone() {
         return m_propZone;
     }
-    public double getXCoordinate() {return cX;}
-    public double getRelativeX() { return cX / 1280;}
+    public double getXCoordinate() {return cY;}
+    public double getRelativeX() { return cY / 1280;}
 
     // Used in the initial RunOpMode command to display live telemetry data, as well as displaying it as a label next to the contour box in the YellowBlobDetectionPipeline function.
     private static double getDistance(double width) {
