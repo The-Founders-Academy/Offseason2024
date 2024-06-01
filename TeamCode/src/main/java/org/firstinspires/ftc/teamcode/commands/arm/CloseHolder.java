@@ -14,7 +14,7 @@ public class CloseHolder extends CommandBase {
 
     @Override
     public void execute() {
-        m_arm.setHolderPosition(0.05);
+        m_arm.setHolderPosition(0.01);
     }
 
     @Override

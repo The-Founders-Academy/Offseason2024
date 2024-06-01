@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.checkerframework.checker.units.qual.C;
 import org.firstinspires.ftc.teamcode.Constants;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.subsytems.Arm;
 import org.firstinspires.ftc.teamcode.subsytems.Intake;
 import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
 
+@TeleOp(name="main", group="competion")
 public class Main extends CommandOpMode {
     private Mecanum2024 m_mecanumDrive;
     private Intake m_intake;

@@ -24,8 +24,8 @@ public class Arm extends SubsystemBase {
         // Shoulder constants
         public static double ShoulderMinAngleDeg= -180;
         public static double ShoulderMaxAngleDeg = 180;
-        public static double ShoulderStowed = 0.28;
-        public static double ShoulderScore = 0.50;
+        public static double ShoulderStowed = 0.30;
+        public static double ShoulderScore = 0.53;
 
         // Holder constants
         public static double HolderMinAngleDeg = -180;

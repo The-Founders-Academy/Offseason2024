@@ -63,12 +63,10 @@ public class Mecanum2024 extends BaseMecanumDrive {
                 .perpOffset(-20.32);
 
         double cm_per_tick = 2 * Math.PI * odoConfigs.getDeadWheelRadiusCentimeters() / odoConfigs.getTicksPerRevolution();
-        left = m_frontRight.encoder.setDistancePerPulse(cm_per_tick);
-        left.setDirection(Motor.Direction.REVERSE);
-        right = m_frontLeft.encoder.setDistancePerPulse(cm_per_tick);
-        right.setDirection(Motor.Direction.REVERSE);
-        horizontal = m_backLeft.encoder.setDistancePerPulse(cm_per_tick);
-
+        left = m_backLeft.encoder.setDistancePerPulse(cm_per_tick);
+        right = m_frontRight.encoder.setDistancePerPulse(cm_per_tick);
+        horizontal = m_backRight.encoder.setDistancePerPulse(cm_per_tick);
+        horizontal.setDirection(Motor.Direction.REVERSE);
         m_odo = new HolonomicOdometry(
                 left::getDistance,
                 right::getDistance,
@@ -207,6 +205,9 @@ public class Mecanum2024 extends BaseMecanumDrive {
         p.put("target X", m_translationXController.getSetPoint());
         p.put("target Y", m_translationYController.getSetPoint());
         p.put("target Heading", m_rotationController.getSetPoint());
+//        p.put("Left", left.getPosition());
+//        p.put("Right", right.getPosition());
+//        p.put("Perp", horizontal.getPosition());
 
         FtcDashboard.getInstance().sendTelemetryPacket(p);
     }

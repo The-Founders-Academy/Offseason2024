@@ -33,4 +33,5 @@ public class FieldPose2024 {
     public static Pose2d RedBackstageOuter = new Pose2d(BlueBackstageOuter.getX(), -BlueBackdropOuter.getY(), Rotation2d.fromDegrees(90));
     public static Pose2d BlueRightSpikeMarkClose = new Pose2d(48.9, 111.23, Rotation2d.fromDegrees(-45));
     public static Pose2d RedLeftSpikeMarkClose = new Pose2d(BlueRightSpikeMarkClose.getX(), -BlueRightSpikeMarkClose.getY(), Rotation2d.fromDegrees(135));
+    public static Pose2d RedBackstagePrepOuter = new Pose2d();
 }
