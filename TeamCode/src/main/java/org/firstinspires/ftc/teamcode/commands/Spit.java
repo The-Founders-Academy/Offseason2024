@@ -14,6 +14,11 @@ public class Spit extends CommandBase {
 
     @Override
     public void execute() {
-        m_intake.setVelocity(-0.1); // TODO tune this to be slow and out of the robot
+        m_intake.setVelocity(0.4);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_intake.setVelocity(0);
     }
 }

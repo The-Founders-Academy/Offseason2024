@@ -14,5 +14,9 @@ public class Constants {
         public static double Kd = 0; // Derivative gain, set to 0 in MecanumConfigs2024
     }
 
+    public static class MatchSingleton {
+        public static double EndAutoHeading = 0; // The heading we end auto with
+    }
+
 }
 

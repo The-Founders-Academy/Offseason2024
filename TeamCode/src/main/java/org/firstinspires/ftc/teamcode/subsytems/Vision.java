@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsytems;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -26,7 +27,6 @@ public class Vision extends SubsystemBase {
 
     public Vision(HardwareMap hardwareMap) {
         m_front = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "frontCamera"));
-
         m_front.setPipeline(m_teamPropPipeline);
     }
 

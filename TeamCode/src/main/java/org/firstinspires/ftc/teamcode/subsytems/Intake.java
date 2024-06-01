@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.gamepad.CommandGamepad;
 
 public class Intake extends SubsystemBase {
     private MotorEx m_spinner;
-    public Intake(String name, HardwareMap hardwareMap) {
-        m_spinner = new MotorEx(hardwareMap, name);
+    public Intake(HardwareMap hardwareMap) {
+        m_spinner = new MotorEx(hardwareMap, "intake");
         m_spinner.setRunMode(Motor.RunMode.RawPower);
     }
 

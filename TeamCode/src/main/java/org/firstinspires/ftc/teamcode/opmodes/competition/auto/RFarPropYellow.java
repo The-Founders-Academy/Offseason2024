@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.commands.DriveToPosition;
 import org.firstinspires.ftc.teamcode.commands.auto.DriveToPositionWithTeamProp;
 import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.subsytems.Intake;
-import org.firstinspires.ftc.teamcode.subsytems.Lift;
 import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
 import org.firstinspires.ftc.teamcode.subsytems.Vision;
 import org.firstinspires.ftc.teamcode.util.DriverStation;
@@ -20,7 +19,6 @@ import org.firstinspires.ftc.teamcode.util.DriverStation;
 @Autonomous(name="Red Far Prop 2+0")
 public class RFarPropYellow extends CommandOpMode {
     private Mecanum2024 m_mecnaumDrive;
-    private Lift m_lift;
     private Vision m_vision;
     private Intake m_intake;
 
@@ -29,9 +27,8 @@ public class RFarPropYellow extends CommandOpMode {
         DriverStation.getInstance().setAlliance(DriverStation.Alliance.RED);
         MecanumConfigs configs = new MecanumConfigs();
         m_mecnaumDrive = new Mecanum2024(hardwareMap, configs, FieldPose2024.AutoRedFar);
-        m_lift = new Lift(hardwareMap, "leftLift", "rightLift");
         m_vision = new Vision(hardwareMap);
-        m_intake = new Intake("intake", hardwareMap);
+        m_intake = new Intake(hardwareMap);
         // 1) Place purple pixel on team prop spike mark
         // 2) Place yellow pixel on backdrop as directed
         // 3) Park

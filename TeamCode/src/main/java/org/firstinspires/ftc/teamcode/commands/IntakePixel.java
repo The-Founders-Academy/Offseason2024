@@ -9,15 +9,13 @@ import org.firstinspires.ftc.teamcode.util.DriverStation;
 
 public class IntakePixel extends CommandBase {
     private Intake m_intake;
-    private CommandGamepad m_operator;
-    public IntakePixel(Intake intake, CommandGamepad operator) {
+    public IntakePixel(Intake intake) {
         m_intake = intake;
-        m_operator = operator;
-        addRequirements(m_intake, m_operator);
+        addRequirements(m_intake);
     }
     @Override
     public void execute() {
-        m_intake.setVelocity(m_operator.getLeftY());
+        m_intake.setVelocity(-0.75);
         DriverStation.getInstance().getTelemetry().addData("intake speed", m_intake.getVelocity());
         DriverStation.getInstance().getTelemetry().update();
 
