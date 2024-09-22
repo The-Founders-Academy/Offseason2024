@@ -21,26 +21,26 @@ public class StraightLineTest extends OpMode {
     @Override
     public void loop() {
         if(gamepad1.y) {            // forward
-            fL.set(0.5);
+            fL.set(-0.5);
             fR.set(0.5);
-            bL.set(0.5);
+            bL.set(-0.5);
             bR.set(0.5);
         } else if(gamepad1.a) {     // backward
-            fL.set(-0.5);
+            fL.set(0.5);
             fR.set(-0.5);
-            bL.set(-0.5);
+            bL.set(0.5);
             bR.set(-0.5);
 
         } else if(gamepad1.x) {     // left
-            fL.set(-0.5);
+            fL.set(0.5);
             fR.set(0.5);
-            bL.set(0.5);
+            bL.set(-0.5);
             bR.set(-0.5);
 
         } else if(gamepad1.b) {     // right
-            fL.set(0.5);
+            fL.set(-0.5);
             fR.set(-0.5);
-            bL.set(-0.5);
+            bL.set(0.5);
             bR.set(0.5);
 
         } else {
