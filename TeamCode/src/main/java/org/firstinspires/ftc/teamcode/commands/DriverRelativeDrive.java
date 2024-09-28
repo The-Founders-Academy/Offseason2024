@@ -5,7 +5,6 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.gamepad.CommandGamepad;
 import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
-import org.firstinspires.ftc.teamcode.util.DriverStation;
 
 public class DriverRelativeDrive extends CommandBase {
     private Mecanum2024 m_mecanum;

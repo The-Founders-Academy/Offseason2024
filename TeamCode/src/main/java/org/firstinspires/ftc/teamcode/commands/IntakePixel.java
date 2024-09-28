@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.robocol.Command;
 
 import org.firstinspires.ftc.teamcode.gamepad.CommandGamepad;
 import org.firstinspires.ftc.teamcode.subsytems.Intake;
-import org.firstinspires.ftc.teamcode.util.DriverStation;
 
 public class IntakePixel extends CommandBase {
     private Intake m_intake;
@@ -18,8 +17,6 @@ public class IntakePixel extends CommandBase {
     @Override
     public void execute() {
         m_intake.setVelocity(m_operator.getLeftY());
-        DriverStation.getInstance().getTelemetry().addData("intake speed", m_intake.getVelocity());
-        DriverStation.getInstance().getTelemetry().update();
 
     }
     @Override

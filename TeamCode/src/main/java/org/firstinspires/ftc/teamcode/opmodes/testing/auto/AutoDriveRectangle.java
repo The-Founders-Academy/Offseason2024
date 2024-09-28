@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.commands.DriveToPosition;
 import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
 import org.firstinspires.ftc.teamcode.subsytems.Mecanum2024;
-import org.firstinspires.ftc.teamcode.util.DriverStation;
 
 @Autonomous(name="Simple rectangle PID")
 public class AutoDriveRectangle extends CommandOpMode {
@@ -23,7 +22,6 @@ public class AutoDriveRectangle extends CommandOpMode {
     Pose2d m_bottomRightCorner = new Pose2d(15, 0, Rotation2d.fromDegrees(90));
     @Override
     public void initialize() {
-        DriverStation.getInstance().setTelemetry(telemetry);
 
         MecanumConfigs configs = new MecanumConfigs().runMode(Motor.RunMode.RawPower);
         m_mecanumDrive = new Mecanum2024(hardwareMap, configs, m_bottomLeftCorner);

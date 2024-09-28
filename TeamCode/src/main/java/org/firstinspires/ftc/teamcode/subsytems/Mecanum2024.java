@@ -19,8 +19,6 @@ import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.mecanum.BaseMecanumDrive;
 import org.firstinspires.ftc.teamcode.mecanum.MecanumConfigs;
-import org.firstinspires.ftc.teamcode.util.DriverStation;
-import org.firstinspires.ftc.teamcode.util.DriverStation.Alliance;
 import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 
@@ -51,7 +49,7 @@ public class Mecanum2024 extends BaseMecanumDrive {
     private double m_initialAngleRad;
 
     public Mecanum2024(HardwareMap hardwareMap, MecanumConfigs mecanumConfigs, Pose2d initialPose) {
-        super(hardwareMap, mecanumConfigs, initialPose);
+        super(hardwareMap, mecanumConfigs, initialPose, Alliance.RED);
         m_robotPose = initialPose;
 
         m_frontLeft.setInverted(true);
@@ -90,7 +88,8 @@ public class Mecanum2024 extends BaseMecanumDrive {
         m_gyro.initialize(myIMUparameters);
 
         // m_odo is tracking heading / angle offset, so set its initial rotation to 0
-        m_odo.updatePose(new Pose2d(initialPose.getX(), initialPose.getY(), Rotation2d.fromDegrees(0)));
+        Pose2d Pose2dadjustedinitialpose = new Pose2d(initialPose.getX(), initialPose.getY(), Rotation2d.fromDegrees(0));
+        m_odo.updatePose(Pose2dadjustedinitialpose);
 
         m_robotPose = initialPose;
         m_initialAngleRad = initialPose.getHeading();
@@ -134,13 +133,13 @@ public class Mecanum2024 extends BaseMecanumDrive {
     }
 
     public void tunePIDs() {
-        m_translationXController.setPID(Mecanum2024Params.TranslationP, Mecanum2024Params.TranslationI, Mecanum2024Params.TranslationD);
-        m_translationYController.setPID(Mecanum2024Params.TranslationP, Mecanum2024Params.TranslationI, Mecanum2024Params.TranslationD);
-        m_rotationController.setPID(Mecanum2024Params.RotationP, Mecanum2024Params.RotationI, Mecanum2024Params.RotationD);
-
-        m_translationXController.setTolerance(Mecanum2024Params.TranslationToleranceCentimeters);
-        m_translationYController.setTolerance(Mecanum2024Params.TranslationToleranceCentimeters);
-        m_rotationController.setTolerance(Mecanum2024Params.RotationToleranceRad);
+//        m_translationXController.setPID(Mecanum2024Params.TranslationP, Mecanum2024Params.TranslationI, Mecanum2024Params.TranslationD);
+//        m_translationYController.setPID(Mecanum2024Params.TranslationP, Mecanum2024Params.TranslationI, Mecanum2024Params.TranslationD);
+//        m_rotationController.setPID(Mecanum2024Params.RotationP, Mecanum2024Params.RotationI, Mecanum2024Params.RotationD);
+//
+//        m_translationXController.setTolerance(Mecanum2024Params.TranslationToleranceCentimeters);
+//        m_translationYController.setTolerance(Mecanum2024Params.TranslationToleranceCentimeters);
+//        m_rotationController.setTolerance(Mecanum2024Params.RotationToleranceRad);
     }
 
     public void moveFieldRelativeForPID() {
@@ -199,5 +198,12 @@ public class Mecanum2024 extends BaseMecanumDrive {
         p.put("horizontal", horizontal.getPosition());
 
         FtcDashboard.getInstance().sendTelemetryPacket(p);
+
+        TelemetryPacket driveInformation = new TelemetryPacket();
+        driveInformation.put("Left Encoder", left.getDistance());
+        driveInformation.put("Right Encoder", right.getDistance());
+        driveInformation.put("Perpendicular Encoder", horizontal.getDistance());
+
+        FtcDashboard.getInstance().sendTelemetryPacket(driveInformation);
     }
 }

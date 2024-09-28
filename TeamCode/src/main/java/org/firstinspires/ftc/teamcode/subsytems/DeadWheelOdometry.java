@@ -5,7 +5,7 @@ import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
 
-import org.firstinspires.ftc.teamcode.util.DriverStation;
+
 
 public class DeadWheelOdometry {
     private Encoder m_left;
@@ -44,9 +44,6 @@ public class DeadWheelOdometry {
 
         double dTheta = cm_per_tick * (dR - dL) / L;
         theta += dTheta;
-        DriverStation.getInstance().getTelemetry().clearAll();
-        DriverStation.getInstance().getTelemetry().addData("Theta", Math.toDegrees(theta));
-        DriverStation.getInstance().getTelemetry().update();
         return null;
     }
 
